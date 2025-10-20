@@ -22,7 +22,7 @@
 
 ---
 
-### 📄 [View Full Documentation PDF](Palworld%20Server%20Settings%20Editor.pdf)
+### 📄 [View Editor Preview](Palworld%20Server%20Settings%20Editor.pdf)
 
 </div>
 
