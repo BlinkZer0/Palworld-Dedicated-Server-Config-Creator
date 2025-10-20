@@ -11,27 +11,71 @@
             box-sizing: border-box;
         }
 
+        :root {
+            /* Light theme variables */
+            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-secondary: white;
+            --bg-tertiary: #f7fafc;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 40px rgba(0,0,0,0.2);
+            --header-gradient: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            --input-bg: white;
+            --input-border: #e2e8f0;
+            --input-focus: #5a67d8;
+            --section-bg: white;
+            --section-border: #e2e8f0;
+            --tooltip-bg: #2d3748;
+            --tooltip-text: white;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme variables */
+            --bg-primary: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            --bg-secondary: #1a202c;
+            --bg-tertiary: #2d3748;
+            --text-primary: #f7fafc;
+            --text-secondary: #e2e8f0;
+            --text-muted: #a0aec0;
+            --border-color: #4a5568;
+            --shadow: 0 10px 40px rgba(0,0,0,0.5);
+            --header-gradient: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            --input-bg: #2d3748;
+            --input-border: #4a5568;
+            --input-focus: #63b3ed;
+            --section-bg: #180d0d;
+            --section-border: #4a5568;
+            --tooltip-bg: #1a202c;
+            --tooltip-text: #f7fafc;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             padding: 20px;
             min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow);
             overflow: hidden;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         .header {
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            background: var(--header-gradient);
             color: white;
             padding: 30px;
             text-align: center;
+            transition: background 0.3s ease;
         }
 
         .header h1 {
@@ -44,13 +88,54 @@
             opacity: 0.9;
         }
 
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-text {
+            flex: 1;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .theme-icon {
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-icon {
+            transform: rotate(15deg);
+        }
+
         .controls {
             padding: 20px 30px;
-            background: #f7fafc;
-            border-bottom: 1px solid #e2e8f0;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .btn {
@@ -101,31 +186,36 @@
 
         .content {
             padding: 30px;
+            background: var(--bg-secondary);
+            transition: background 0.3s ease;
         }
 
         .section {
             margin-bottom: 30px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             overflow: visible;
+            background: var(--section-bg);
+            transition: border-color 0.3s ease, background 0.3s ease;
         }
 
         .section-header {
-            background: #edf2f7;
+            background: var(--bg-tertiary);
             padding: 15px 20px;
             font-size: 1.3em;
             font-weight: 600;
-            color: #2d3748;
+            color: var(--text-primary);
             cursor: pointer;
             user-select: none;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transition: background 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .section-header:hover {
-            background: #e2e8f0;
+            background: var(--border-color);
         }
 
         .section-header::after {
@@ -142,8 +232,9 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            background: white;
+            background: var(--section-bg);
             overflow: visible;
+            transition: background 0.3s ease;
         }
 
         .section-content.collapsed {
@@ -179,18 +270,20 @@
             position: absolute;
             left: 0;
             top: 25px;
-            background: #2d3748;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 4px;
+            background: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            padding: 10px 14px;
+            border-radius: 6px;
             white-space: nowrap;
             z-index: 10000;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: normal;
-            max-width: 300px;
+            min-width: 250px;
+            max-width: 500px;
             white-space: normal;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             pointer-events: none;
+            line-height: 1.5;
         }
 
         .tooltip:hover::before {
@@ -202,7 +295,7 @@
             height: 0;
             border-left: 6px solid transparent;
             border-right: 6px solid transparent;
-            border-bottom: 7px solid #2d3748;
+            border-bottom: 7px solid var(--tooltip-bg);
             z-index: 10001;
             pointer-events: none;
         }
@@ -213,9 +306,11 @@
         select,
         textarea {
             padding: 10px 12px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--input-border);
             border-radius: 6px;
             font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text-primary);
             transition: all 0.3s ease;
             font-family: inherit;
         }
@@ -226,8 +321,38 @@
         select:focus,
         textarea:focus {
             outline: none;
-            border-color: #5a67d8;
+            border-color: var(--input-focus);
             box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+        }
+
+        /* Dark mode select dropdown styling */
+        [data-theme="dark"] select {
+            background-color: #4a5568 !important;
+            color: #f7fafc !important;
+        }
+
+        [data-theme="dark"] select option {
+            background-color: #4a5568 !important;
+            color: #f7fafc !important;
+        }
+
+        [data-theme="dark"] select:focus {
+            background-color: #4a5568 !important;
+            color: #f7fafc !important;
+        }
+
+        /* Dark mode section content with white text */
+        [data-theme="dark"] .section-content {
+            background: #180d0d !important;
+            color: white !important;
+        }
+
+        [data-theme="dark"] .section-content * {
+            color: white !important;
+        }
+
+        [data-theme="dark"] .section-content label {
+            color: white !important;
         }
 
         input[type="checkbox"] {
@@ -483,6 +608,118 @@
         .section.enemy { border-left: 4px solid #e53e3e; }
         .section.management { border-left: 4px solid #667eea; }
         .section.rcon { border-left: 4px solid #805ad5; }
+
+        /* Input-Slider Wrapper Styles */
+        .input-slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .input-slider-wrapper input[type="number"] {
+            flex: 0 0 120px;
+            min-width: 120px;
+        }
+
+        .input-slider-wrapper input[type="range"] {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .slider-value {
+            flex: 0 0 60px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            text-align: right;
+            min-width: 60px;
+        }
+
+        /* Custom Range Slider Styles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #48bb78 0%, #48bb78 10%, #4299e1 10%, #4299e1 50%, #f6ad55 50%, #f6ad55 80%, #fc8181 80%, #fc8181 100%);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Webkit (Chrome, Safari, Edge) */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #5a67d8;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 3px 10px rgba(90, 103, 216, 0.4);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.1);
+            background: #4c51bf;
+        }
+
+        /* Firefox */
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #5a67d8;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 3px 10px rgba(90, 103, 216, 0.4);
+        }
+
+        input[type="range"]::-moz-range-thumb:active {
+            transform: scale(1.1);
+            background: #4c51bf;
+        }
+
+        /* Firefox track */
+        input[type="range"]::-moz-range-track {
+            height: 8px;
+            border-radius: 4px;
+            background: transparent;
+        }
+
+        /* Value color coding */
+        .slider-value.value-low {
+            color: #3182ce;
+        }
+
+        .slider-value.value-normal {
+            color: #38a169;
+        }
+
+        .slider-value.value-high {
+            color: #dd6b20;
+        }
+
+        .slider-value.value-extreme {
+            color: #e53e3e;
+        }
     </style>
 
     <!-- SVG Icon Definitions -->
@@ -647,8 +884,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚙️ Palworld Server Settings Editor</h1>
-            <p>Configure your dedicated server settings with ease</p>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>⚙️ Palworld Server Settings Editor</h1>
+                    <p>Configure your dedicated server settings with ease</p>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
         </div>
 
         <div class="preset-buttons">
@@ -703,43 +947,43 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Server Name <span class="tooltip" data-tip="The name of your server as it appears in the server list">ℹ️</span></label>
+                            <label>Server Name <span class="tooltip" data-tip="Custom name displayed in the server browser. Players will see this when searching for servers to join.">ℹ️</span></label>
                             <input type="text" id="ServerName" value="Default Palworld Server">
                         </div>
                         <div class="form-group">
-                            <label>Server Description <span class="tooltip" data-tip="A description of your server">ℹ️</span></label>
+                            <label>Server Description <span class="tooltip" data-tip="Detailed description text about your server. Helps players understand your server's rules, playstyle, or special features.">ℹ️</span></label>
                             <input type="text" id="ServerDescription" value="">
                         </div>
                         <div class="form-group">
-                            <label>Server Password <span class="tooltip" data-tip="Password required to join the server (leave empty for no password)">ℹ️</span></label>
+                            <label>Server Password <span class="tooltip" data-tip="Login password required to join the server. Leave empty for a public server. Use this to create a private server for friends.">ℹ️</span></label>
                             <input type="password" id="ServerPassword" value="">
                         </div>
                         <div class="form-group">
-                            <label>Admin Password <span class="tooltip" data-tip="Password for server administration">ℹ️</span></label>
+                            <label>Admin Password <span class="tooltip" data-tip="Administrative access credentials for server management. Required to use admin commands and perform server maintenance.">ℹ️</span></label>
                             <input type="password" id="AdminPassword" value="">
                         </div>
                         <div class="form-group">
-                            <label>Public IP <span class="tooltip" data-tip="Your server's public IP address">ℹ️</span></label>
+                            <label>Public IP <span class="tooltip" data-tip="Your server's external IP address for manual network configuration. Usually auto-detected. Only set if having connection issues.">ℹ️</span></label>
                             <input type="text" id="PublicIP" value="">
                         </div>
                         <div class="form-group">
-                            <label>Public Port <span class="tooltip" data-tip="Port for game connections (default: 8211)">ℹ️</span></label>
+                            <label>Public Port <span class="tooltip" data-tip="Port for game connections. Default is 8211. Must be forwarded in your router if hosting from home. Players connect using IP:Port.">ℹ️</span></label>
                             <input type="number" id="PublicPort" value="8211" min="1024" max="65535">
                         </div>
                         <div class="form-group">
-                            <label>Region <span class="tooltip" data-tip="Server region identifier">ℹ️</span></label>
+                            <label>Region <span class="tooltip" data-tip="Server region identifier (e.g., NA, EU, ASIA). Helps players find servers in their geographic area for better latency.">ℹ️</span></label>
                             <input type="text" id="Region" value="">
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bUseAuth">
-                                Use Authentication <span class="tooltip" data-tip="Enable Steam authentication">ℹ️</span>
+                                Use Authentication <span class="tooltip" data-tip="Enable platform authentication (Steam/Xbox/PlayStation). Prevents unauthorized access and helps with ban management.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bShowPlayerList">
-                                Show Player List <span class="tooltip" data-tip="Display player list publicly">ℹ️</span>
+                                Show Player List <span class="tooltip" data-tip="Display the list of online players publicly. When disabled, only admins can see who's online for privacy.">ℹ️</span>
                             </label>
                         </div>
                     </div>
@@ -755,55 +999,55 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Max Players <span class="tooltip" data-tip="Maximum number of players (1-32)">ℹ️</span></label>
+                            <label>Max Players <span class="tooltip" data-tip="Maximum concurrent players allowed on the server (1-32). Official servers support up to 32 players. Higher values may impact performance.">ℹ️</span></label>
                             <input type="number" id="ServerPlayerMaxNum" value="32" min="1" max="32">
                         </div>
                         <div class="form-group">
-                            <label>Co-op Players <span class="tooltip" data-tip="Maximum number of co-op players">ℹ️</span></label>
+                            <label>Co-op Players <span class="tooltip" data-tip="Maximum party size for cooperative play (1-4). Controls how many players can join together in a co-op group. Note: This setting may not always function as expected.">ℹ️</span></label>
                             <input type="number" id="CoopPlayerMaxNum" value="4" min="1" max="4">
                         </div>
                         <div class="form-group">
-                            <label>Guild Max Players <span class="tooltip" data-tip="Maximum players per guild (1-100)">ℹ️</span></label>
+                            <label>Guild Max Players <span class="tooltip" data-tip="Maximum members allowed per guild/faction (1-100). Larger guilds enable more cooperative base building and PvP coordination.">ℹ️</span></label>
                             <input type="number" id="GuildPlayerMaxNum" value="20" min="1" max="100">
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bIsMultiplay">
-                                Multiplayer Enabled <span class="tooltip" data-tip="Enable multiplayer mode">ℹ️</span>
+                                Multiplayer Enabled <span class="tooltip" data-tip="Enable multiplayer functionality. When disabled, server runs in single-player mode. Must be enabled for online play.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bIsPvP">
-                                PvP Enabled <span class="tooltip" data-tip="Enable player vs player combat">ℹ️</span>
+                                PvP Enabled <span class="tooltip" data-tip="Enable player-versus-player combat. When enabled, players can attack each other outside of safe zones. Affects overall server playstyle.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bEnablePlayerToPlayerDamage">
-                                Player-to-Player Damage <span class="tooltip" data-tip="Allow players to damage each other">ℹ️</span>
+                                Player-to-Player Damage <span class="tooltip" data-tip="Allow players to damage each other directly. Works in conjunction with PvP settings. Disable for pure cooperative gameplay.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bEnableFriendlyFire">
-                                Friendly Fire <span class="tooltip" data-tip="Enable damage to allies">ℹ️</span>
+                                Friendly Fire <span class="tooltip" data-tip="Enable damage to allies and guild members. When enabled, be careful with area attacks! Adds realism but can cause accidents.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bEnableDefenseOtherGuildPlayer">
-                                Defense vs Other Guilds <span class="tooltip" data-tip="Enable defense against other guild players">ℹ️</span>
+                                Defense vs Other Guilds <span class="tooltip" data-tip="Enable defensive actions against players from other guilds. Allows protecting territory from rival factions.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bCanPickupOtherGuildDeathPenaltyDrop">
-                                Pickup Other Guild Drops <span class="tooltip" data-tip="Allow picking up death penalty drops from other guilds">ℹ️</span>
+                                Pickup Other Guild Drops <span class="tooltip" data-tip="Allow picking up items dropped by players from other guilds when they die. Creates risk vs reward for PvP encounters.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
-                            <label>Crossplay Platforms <span class="tooltip" data-tip="Select platforms to enable crossplay with">ℹ️</span></label>
+                            <label>Crossplay Platforms <span class="tooltip" data-tip="Select which gaming platforms can connect to your server. Supports Steam, Xbox, PS5, and Mac. More platforms = larger player pool.">ℹ️</span></label>
                             <div class="multi-select-wrapper">
                                 <div class="multi-select-option">
                                     <input type="checkbox" id="platform_Steam" value="Steam" checked>
@@ -836,7 +1080,7 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Difficulty <span class="tooltip" data-tip="Game difficulty level">ℹ️</span></label>
+                            <label>Difficulty <span class="tooltip" data-tip="Game difficulty preset. Note: Currently not fully functional. Use individual multipliers below for fine-tuning difficulty instead.">ℹ️</span></label>
                             <select id="Difficulty">
                                 <option value="None">None</option>
                                 <option value="Normal">Normal</option>
@@ -844,7 +1088,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Death Penalty <span class="tooltip" data-tip="What you lose on death">ℹ️</span></label>
+                            <label>Death Penalty <span class="tooltip" data-tip="What you lose when you die. None = keep everything, Item = lose inventory items, ItemAndEquipment = lose items + worn gear, All = lose everything including Pals in party.">ℹ️</span></label>
                             <select id="DeathPenalty">
                                 <option value="None">None</option>
                                 <option value="Item">Items Only</option>
@@ -853,61 +1097,77 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Experience Rate <span class="tooltip" data-tip="XP gain multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="ExpRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Experience Rate <span class="tooltip" data-tip="XP gain multiplier for both players and Pals (0.1-10.0). 1.0 = default, 2.0 = double XP, 0.5 = half XP. Higher values = faster leveling.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="ExpRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('ExpRate')">
+                                <input type="range" id="ExpRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('ExpRate_slider')">
+                                <span class="slider-value" id="ExpRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Pal Capture Rate <span class="tooltip" data-tip="Capture chance multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PalCaptureRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Pal Capture Rate <span class="tooltip" data-tip="Pal capture probability multiplier (0.1-10.0). 1.0 = default catch rates, 2.0 = twice as easy, 0.5 = twice as hard. Affects sphere success chance.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PalCaptureRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PalCaptureRate')">
+                                <input type="range" id="PalCaptureRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PalCaptureRate_slider')">
+                                <span class="slider-value" id="PalCaptureRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Day Speed Rate <span class="tooltip" data-tip="Daytime speed multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="DayTimeSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Day Speed Rate <span class="tooltip" data-tip="Day cycle speed multiplier (0.1-10.0). 1.0 = normal 30min days, 2.0 = 15min days (faster), 0.5 = 60min days (slower). Affects gameplay pacing.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="DayTimeSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('DayTimeSpeedRate')">
+                                <input type="range" id="DayTimeSpeedRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('DayTimeSpeedRate_slider')">
+                                <span class="slider-value" id="DayTimeSpeedRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Night Speed Rate <span class="tooltip" data-tip="Nighttime speed multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="NightTimeSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Night Speed Rate <span class="tooltip" data-tip="Night cycle speed multiplier (0.1-10.0). Works same as day speed. Set higher to shorten nights, lower to extend them. Separate from day rate for flexibility.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="NightTimeSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('NightTimeSpeedRate')">
+                                <input type="range" id="NightTimeSpeedRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('NightTimeSpeedRate_slider')">
+                                <span class="slider-value" id="NightTimeSpeedRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bHardcore">
-                                Hardcore Mode <span class="tooltip" data-tip="Permanent death mode">ℹ️</span>
+                                Hardcore Mode <span class="tooltip" data-tip="Enable permanent death mode. When your character dies, you must delete and recreate. Creates intense high-stakes gameplay. Backup your save!">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bPalLost">
-                                Pal Lost on Death <span class="tooltip" data-tip="Pals are permanently lost on death">ℹ️</span>
+                                Pal Lost on Death <span class="tooltip" data-tip="Pals in your party are permanently lost when you die. Extremely punishing! Only for the most hardcore players. Pairs well with Hardcore Mode.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bCharacterRecreateInHardcore">
-                                Character Recreate in Hardcore <span class="tooltip" data-tip="Allow character recreation in hardcore mode">ℹ️</span>
+                                Character Recreate in Hardcore <span class="tooltip" data-tip="Allow creating a new character in Hardcore mode after death instead of being locked out. Provides second chances in perma-death gameplay.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bEnableFastTravel" checked>
-                                Fast Travel Enabled <span class="tooltip" data-tip="Allow fast travel">ℹ️</span>
+                                Fast Travel Enabled <span class="tooltip" data-tip="Allow teleporting between discovered fast travel points. Disable for more realistic travel or to increase world exploration difficulty.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bIsStartLocationSelectByMap" checked>
-                                Select Start Location <span class="tooltip" data-tip="Allow starting location selection on map">ℹ️</span>
+                                Select Start Location <span class="tooltip" data-tip="Allow choosing your spawn point on the map when creating a character. When disabled, spawns are random, adding unpredictability.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bEnableAimAssistPad" checked>
-                                Aim Assist (Gamepad) <span class="tooltip" data-tip="Enable aim assist for gamepad users">ℹ️</span>
+                                Aim Assist (Gamepad) <span class="tooltip" data-tip="Enable aim assistance for controller/gamepad users. Helps with aiming during combat on console or when using controllers on PC.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bEnableAimAssistKeyboard">
-                                Aim Assist (Keyboard) <span class="tooltip" data-tip="Enable aim assist for keyboard users">ℹ️</span>
+                                Aim Assist (Keyboard) <span class="tooltip" data-tip="Enable aim assistance for keyboard/mouse users. Generally not recommended as mouse aiming is already precise. Most players keep this off.">ℹ️</span>
                             </label>
                         </div>
                     </div>
@@ -923,7 +1183,7 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Randomizer Type <span class="tooltip" data-tip="Type of randomization">ℹ️</span></label>
+                            <label>Randomizer Type <span class="tooltip" data-tip="World randomization mode. None = standard world, Region = randomize Pal spawns per region, All = complete randomization. Creates unique world experiences each playthrough.">ℹ️</span></label>
                             <select id="RandomizerType">
                                 <option value="None" selected>None</option>
                                 <option value="Region">Region</option>
@@ -931,13 +1191,13 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Randomizer Seed <span class="tooltip" data-tip="Seed for randomization (leave empty for random)">ℹ️</span></label>
+                            <label>Randomizer Seed <span class="tooltip" data-tip="Custom seed for randomization. Leave empty for truly random generation. Use same seed to recreate identical randomized worlds across servers.">ℹ️</span></label>
                             <input type="text" id="RandomizerSeed" value="">
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bIsRandomizerPalLevelRandom">
-                                Randomize Pal Levels <span class="tooltip" data-tip="Randomize Pal levels">ℹ️</span>
+                                Randomize Pal Levels <span class="tooltip" data-tip="Randomize wild Pal levels instead of using zone-based scaling. Creates unpredictable encounters - low level areas may have high level Pals!">ℹ️</span>
                             </label>
                         </div>
                     </div>
@@ -953,43 +1213,71 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Player Attack Damage <span class="tooltip" data-tip="Player attack damage multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PlayerDamageRateAttack" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Player Attack Damage <span class="tooltip" data-tip="Player damage dealt multiplier (0.1-10.0). 1.0 = default damage, 2.0 = double damage, 0.5 = half damage. Makes combat easier/harder.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PlayerDamageRateAttack" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PlayerDamageRateAttack')">
+                                <input type="range" id="PlayerDamageRateAttack_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PlayerDamageRateAttack_slider')">
+                                <span class="slider-value" id="PlayerDamageRateAttack_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Player Defense <span class="tooltip" data-tip="Player defense multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PlayerDamageRateDefense" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Player Defense <span class="tooltip" data-tip="Player damage received multiplier (0.1-10.0). 1.0 = normal damage taken, 0.5 = take half damage (easier), 2.0 = take double damage (harder).">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PlayerDamageRateDefense" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PlayerDamageRateDefense')">
+                                <input type="range" id="PlayerDamageRateDefense_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PlayerDamageRateDefense_slider')">
+                                <span class="slider-value" id="PlayerDamageRateDefense_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Hunger Decrease Rate <span class="tooltip" data-tip="Player hunger decrease rate (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PlayerStomachDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Hunger Decrease Rate <span class="tooltip" data-tip="How fast player hunger depletes (0.1-10.0). 1.0 = normal, 2.0 = get hungry twice as fast, 0.5 = slower hunger. Affects food consumption frequency.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PlayerStomachDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PlayerStomachDecreaceRate')">
+                                <input type="range" id="PlayerStomachDecreaceRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PlayerStomachDecreaceRate_slider')">
+                                <span class="slider-value" id="PlayerStomachDecreaceRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Stamina Decrease Rate <span class="tooltip" data-tip="Player stamina decrease rate (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PlayerStaminaDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Stamina Decrease Rate <span class="tooltip" data-tip="How fast stamina drains during activities (0.1-10.0). 1.0 = normal, 0.5 = stamina lasts longer, 2.0 = stamina drains faster. Affects sprinting, climbing, etc.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PlayerStaminaDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PlayerStaminaDecreaceRate')">
+                                <input type="range" id="PlayerStaminaDecreaceRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PlayerStaminaDecreaceRate_slider')">
+                                <span class="slider-value" id="PlayerStaminaDecreaceRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>HP Regen Rate <span class="tooltip" data-tip="Player HP regeneration rate (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PlayerAutoHPRegeneRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>HP Regen Rate <span class="tooltip" data-tip="Player health regeneration speed (0.1-10.0). 1.0 = default regen, 2.0 = heal twice as fast, 0.5 = slower healing. Affects passive HP recovery.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PlayerAutoHPRegeneRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PlayerAutoHPRegeneRate')">
+                                <input type="range" id="PlayerAutoHPRegeneRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PlayerAutoHPRegeneRate_slider')">
+                                <span class="slider-value" id="PlayerAutoHPRegeneRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>HP Regen (Sleep) <span class="tooltip" data-tip="Player HP regen while sleeping (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PlayerAutoHpRegeneRateInSleep" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>HP Regen (Sleep) <span class="tooltip" data-tip="HP regeneration rate while sleeping in bed (0.1-10.0). Higher values = wake up healthier. Separate from active regen for balancing rest mechanics.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PlayerAutoHpRegeneRateInSleep" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PlayerAutoHpRegeneRateInSleep')">
+                                <input type="range" id="PlayerAutoHpRegeneRateInSleep_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PlayerAutoHpRegeneRateInSleep_slider')">
+                                <span class="slider-value" id="PlayerAutoHpRegeneRateInSleep_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Item Weight Rate <span class="tooltip" data-tip="Item weight multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="ItemWeightRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Item Weight Rate <span class="tooltip" data-tip="Item weight/encumbrance multiplier (0.1-10.0). 1.0 = normal weight, 0.5 = items weigh half (carry more), 2.0 = items weigh double (carry less).">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="ItemWeightRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('ItemWeightRate')">
+                                <input type="range" id="ItemWeightRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('ItemWeightRate_slider')">
+                                <span class="slider-value" id="ItemWeightRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bExistPlayerAfterLogout">
-                                Player Exists After Logout <span class="tooltip" data-tip="Player character remains in world after logout">ℹ️</span>
+                                Player Exists After Logout <span class="tooltip" data-tip="Player body remains vulnerable in world after logout. Disable for safe logout. Enable for realistic survival where you can be killed while offline.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bEnableNonLoginPenalty" checked>
-                                Non-Login Penalty <span class="tooltip" data-tip="Enable penalties for not logging in">ℹ️</span>
+                                Non-Login Penalty <span class="tooltip" data-tip="Enable penalties for inactive players. Bases may deteriorate or resources decay if not maintained. Keeps server active and prevents abandoned bases.">ℹ️</span>
                             </label>
                         </div>
                     </div>
@@ -1005,53 +1293,81 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Pal Spawn Rate <span class="tooltip" data-tip="Pal spawn rate multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PalSpawnNumRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Pal Spawn Rate <span class="tooltip" data-tip="Wild Pal spawn frequency multiplier (0.1-10.0). 1.0 = normal spawns, 2.0 = twice as many Pals, 0.5 = half as many. Affects world population density.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PalSpawnNumRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PalSpawnNumRate')">
+                                <input type="range" id="PalSpawnNumRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PalSpawnNumRate_slider')">
+                                <span class="slider-value" id="PalSpawnNumRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Pal Attack Damage <span class="tooltip" data-tip="Pal attack damage multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PalDamageRateAttack" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Pal Attack Damage <span class="tooltip" data-tip="Pal damage dealt multiplier (0.1-10.0). Affects both your Pals and wild Pals. 1.0 = default, 2.0 = Pals hit twice as hard, 0.5 = half damage.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PalDamageRateAttack" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PalDamageRateAttack')">
+                                <input type="range" id="PalDamageRateAttack_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PalDamageRateAttack_slider')">
+                                <span class="slider-value" id="PalDamageRateAttack_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Pal Defense <span class="tooltip" data-tip="Pal defense multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PalDamageRateDefense" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Pal Defense <span class="tooltip" data-tip="Pal damage received multiplier (0.1-10.0). 1.0 = normal, 0.5 = Pals take half damage (tankier), 2.0 = Pals take double damage (die faster).">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PalDamageRateDefense" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PalDamageRateDefense')">
+                                <input type="range" id="PalDamageRateDefense_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PalDamageRateDefense_slider')">
+                                <span class="slider-value" id="PalDamageRateDefense_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Pal Hunger Decrease <span class="tooltip" data-tip="Pal hunger decrease rate (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PalStomachDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Pal Hunger Decrease <span class="tooltip" data-tip="How fast Pals get hungry (0.1-10.0). 1.0 = normal, 2.0 = need to feed twice as often, 0.5 = need less food. Affects base food consumption.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PalStomachDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PalStomachDecreaceRate')">
+                                <input type="range" id="PalStomachDecreaceRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PalStomachDecreaceRate_slider')">
+                                <span class="slider-value" id="PalStomachDecreaceRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Pal Stamina Decrease <span class="tooltip" data-tip="Pal stamina decrease rate (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PalStaminaDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Pal Stamina Decrease <span class="tooltip" data-tip="Pal stamina drain rate (0.1-10.0). Affects riding, combat, and work. Lower = Pals can work/fight longer without rest.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PalStaminaDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PalStaminaDecreaceRate')">
+                                <input type="range" id="PalStaminaDecreaceRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PalStaminaDecreaceRate_slider')">
+                                <span class="slider-value" id="PalStaminaDecreaceRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Pal HP Regen <span class="tooltip" data-tip="Pal HP regeneration rate (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PalAutoHPRegeneRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Pal HP Regen <span class="tooltip" data-tip="Pal health regeneration speed (0.1-10.0). 1.0 = default healing, 2.0 = heal twice as fast, 0.5 = slower healing. Passive recovery rate.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PalAutoHPRegeneRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PalAutoHPRegeneRate')">
+                                <input type="range" id="PalAutoHPRegeneRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PalAutoHPRegeneRate_slider')">
+                                <span class="slider-value" id="PalAutoHPRegeneRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Pal HP Regen (Sleep) <span class="tooltip" data-tip="Pal HP regen while sleeping (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="PalAutoHpRegeneRateInSleep" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Pal HP Regen (Sleep) <span class="tooltip" data-tip="HP regen while Pals are resting in Palbox (0.1-10.0). Higher = faster recovery when not deployed. Helps with base management.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="PalAutoHpRegeneRateInSleep" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('PalAutoHpRegeneRateInSleep')">
+                                <input type="range" id="PalAutoHpRegeneRateInSleep_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('PalAutoHpRegeneRateInSleep_slider')">
+                                <span class="slider-value" id="PalAutoHpRegeneRateInSleep_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Pal Egg Hatch Time (hours) <span class="tooltip" data-tip="Time in hours for Pal eggs to hatch (0-240)">ℹ️</span></label>
+                            <label>Pal Egg Hatch Time (hours) <span class="tooltip" data-tip="Real-time hours for Pal eggs to hatch (0-240). Default is 72 hours (3 days). Lower for faster breeding, higher for more realistic incubation.">ℹ️</span></label>
                             <input type="number" id="PalEggDefaultHatchingTime" value="72.000000" step="1" min="0" max="240">
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bAllowGlobalPalboxExport" checked>
-                                Allow Global Palbox Export <span class="tooltip" data-tip="Allow exporting Pals from global Palbox">ℹ️</span>
+                                Allow Global Palbox Export <span class="tooltip" data-tip="Allow moving Pals OUT of the global Palbox system. Disable to prevent transferring Pals between bases or players.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bAllowGlobalPalboxImport">
-                                Allow Global Palbox Import <span class="tooltip" data-tip="Allow importing Pals to global Palbox">ℹ️</span>
+                                Allow Global Palbox Import <span class="tooltip" data-tip="Allow moving Pals INTO the global Palbox system. When disabled, Pals stay at their current base only.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="EnablePredatorBossPal" checked>
-                                Enable Predator Boss Pals <span class="tooltip" data-tip="Enable predator boss Pals">ℹ️</span>
+                                Enable Predator Boss Pals <span class="tooltip" data-tip="Enable special predator-type boss Pals to spawn in the world. These are rare, powerful encounters with unique rewards.">ℹ️</span>
                             </label>
                         </div>
                     </div>
@@ -1067,47 +1383,63 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Max Base Camps <span class="tooltip" data-tip="Maximum number of base camps (1-128)">ℹ️</span></label>
+                            <label>Max Base Camps <span class="tooltip" data-tip="Maximum base camps per player (1-128). Allows building multiple bases across the map. More bases = more resource production but harder to defend.">ℹ️</span></label>
                             <input type="number" id="BaseCampMaxNum" value="128" min="1" max="128">
                         </div>
                         <div class="form-group">
-                            <label>Max Workers per Base <span class="tooltip" data-tip="Maximum workers per base (1-50)">ℹ️</span></label>
+                            <label>Max Workers per Base <span class="tooltip" data-tip="Maximum Pals that can work at each base (1-50). Default is 15. More workers = faster production but requires more food. Note: May not always function as expected.">ℹ️</span></label>
                             <input type="number" id="BaseCampWorkerMaxNum" value="15" min="1" max="50">
                         </div>
                         <div class="form-group">
-                            <label>Max Bases in Guild <span class="tooltip" data-tip="Maximum base camps per guild (1-10)">ℹ️</span></label>
+                            <label>Max Bases in Guild <span class="tooltip" data-tip="Maximum base camps per guild/group (1-10). Guild members can share and work together at these bases. Enables large-scale cooperation.">ℹ️</span></label>
                             <input type="number" id="BaseCampMaxNumInGuild" value="4" min="1" max="10">
                         </div>
                         <div class="form-group">
-                            <label>Building HP Rate <span class="tooltip" data-tip="Building HP multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="BuildObjectHpRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Building HP Rate <span class="tooltip" data-tip="Building health multiplier (0.1-10.0). 1.0 = normal HP, 2.0 = double durability, 0.5 = half HP. Higher = structures harder to destroy in raids.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="BuildObjectHpRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('BuildObjectHpRate')">
+                                <input type="range" id="BuildObjectHpRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('BuildObjectHpRate_slider')">
+                                <span class="slider-value" id="BuildObjectHpRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Building Damage Rate <span class="tooltip" data-tip="Damage to buildings multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="BuildObjectDamageRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Building Damage Rate <span class="tooltip" data-tip="Damage TO buildings multiplier (0.1-10.0). 1.0 = normal, 2.0 = buildings take double damage, 0.5 = buildings take half damage. Affects PvP raiding.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="BuildObjectDamageRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('BuildObjectDamageRate')">
+                                <input type="range" id="BuildObjectDamageRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('BuildObjectDamageRate_slider')">
+                                <span class="slider-value" id="BuildObjectDamageRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Building Deterioration <span class="tooltip" data-tip="Building deterioration rate (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="BuildObjectDeteriorationDamageRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Building Deterioration <span class="tooltip" data-tip="Passive decay rate for structures (0.1-10.0). 1.0 = normal decay, 0.0 = no decay, 2.0 = faster decay. Affects long-term base maintenance.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="BuildObjectDeteriorationDamageRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('BuildObjectDeteriorationDamageRate')">
+                                <input type="range" id="BuildObjectDeteriorationDamageRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('BuildObjectDeteriorationDamageRate_slider')">
+                                <span class="slider-value" id="BuildObjectDeteriorationDamageRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Work Speed Rate <span class="tooltip" data-tip="Work speed multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="WorkSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Work Speed Rate <span class="tooltip" data-tip="Pal work performance speed (0.1-10.0). 1.0 = normal speed, 2.0 = work twice as fast, 0.5 = work half speed. Affects crafting, farming, mining at bases.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="WorkSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('WorkSpeedRate')">
+                                <input type="range" id="WorkSpeedRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('WorkSpeedRate_slider')">
+                                <span class="slider-value" id="WorkSpeedRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Max Building Limit <span class="tooltip" data-tip="Maximum building limit (0 = unlimited)">ℹ️</span></label>
+                            <label>Max Building Limit <span class="tooltip" data-tip="Maximum number of structures per base (0-100000). 0 = unlimited. Set a limit to prevent lag from over-building or create building strategy challenges.">ℹ️</span></label>
                             <input type="number" id="MaxBuildingLimitNum" value="0" min="0" max="100000">
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bBuildAreaLimit">
-                                Build Area Limit <span class="tooltip" data-tip="Restrict building near certain structures">ℹ️</span>
+                                Build Area Limit <span class="tooltip" data-tip="Restrict building near dungeons, POIs, and other protected structures. Prevents exploits and maintains world integrity.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bInvisibleOtherGuildBaseCampAreaFX">
-                                Hide Other Guild Base FX <span class="tooltip" data-tip="Hide visual effects of other guild bases">ℹ️</span>
+                                Hide Other Guild Base FX <span class="tooltip" data-tip="Hide visual effects of rival guild bases. Improves performance in areas with many nearby bases. Helps FPS on lower-end systems.">ℹ️</span>
                             </label>
                         </div>
                     </div>
@@ -1123,43 +1455,59 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Collection Drop Rate <span class="tooltip" data-tip="Resource drop rate multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="CollectionDropRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Collection Drop Rate <span class="tooltip" data-tip="Resource yield multiplier when gathering (0.1-10.0). 1.0 = normal drops, 2.0 = double resources, 0.5 = half resources. Affects trees, rocks, ore nodes.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="CollectionDropRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('CollectionDropRate')">
+                                <input type="range" id="CollectionDropRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('CollectionDropRate_slider')">
+                                <span class="slider-value" id="CollectionDropRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Collection Object HP <span class="tooltip" data-tip="Harvestable object HP multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="CollectionObjectHpRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Collection Object HP <span class="tooltip" data-tip="Health of harvestable nodes (0.1-10.0). 1.0 = normal HP, 2.0 = nodes take twice as many hits, 0.5 = nodes break faster. Affects gathering speed.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="CollectionObjectHpRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('CollectionObjectHpRate')">
+                                <input type="range" id="CollectionObjectHpRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('CollectionObjectHpRate_slider')">
+                                <span class="slider-value" id="CollectionObjectHpRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Resource Respawn Speed <span class="tooltip" data-tip="Resource respawn speed multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="CollectionObjectRespawnSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Resource Respawn Speed <span class="tooltip" data-tip="How fast resources respawn (0.1-10.0). 1.0 = normal respawn, 2.0 = respawn twice as fast, 0.5 = respawn twice as slow. Affects world resource availability.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="CollectionObjectRespawnSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('CollectionObjectRespawnSpeedRate')">
+                                <input type="range" id="CollectionObjectRespawnSpeedRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('CollectionObjectRespawnSpeedRate_slider')">
+                                <span class="slider-value" id="CollectionObjectRespawnSpeedRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Enemy Drop Rate <span class="tooltip" data-tip="Enemy item drop rate multiplier (0.1-10.0)">ℹ️</span></label>
-                            <input type="number" id="EnemyDropItemRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                            <label>Enemy Drop Rate <span class="tooltip" data-tip="Enemy/Pal item drop rate (0.1-10.0). 1.0 = normal loot, 2.0 = double drops, 0.5 = half drops. Affects resources gained from defeated enemies.">ℹ️</span></label>
+                            <div class="input-slider-wrapper">
+                                <input type="number" id="EnemyDropItemRate" value="1.000000" step="0.1" min="0.1" max="10.0" oninput="syncSlider('EnemyDropItemRate')">
+                                <input type="range" id="EnemyDropItemRate_slider" value="1.0" min="0.1" max="10.0" step="0.1" oninput="syncInput('EnemyDropItemRate_slider')">
+                                <span class="slider-value" id="EnemyDropItemRate_value">1.0x</span>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Max Dropped Items <span class="tooltip" data-tip="Maximum dropped items in world (100-10000)">ℹ️</span></label>
+                            <label>Max Dropped Items <span class="tooltip" data-tip="Maximum item entities in world (100-10000). Higher = less cleanup but potential lag. Lower = better performance but items may despawn faster. Default: 3000.">ℹ️</span></label>
                             <input type="number" id="DropItemMaxNum" value="3000" min="100" max="10000">
                         </div>
                         <div class="form-group">
-                            <label>Max Dropped Items (UNKO) <span class="tooltip" data-tip="Maximum special dropped items (10-1000)">ℹ️</span></label>
+                            <label>Max Dropped Items (UNKO) <span class="tooltip" data-tip="Maximum special/poop items (10-1000). Separate limit for Pal waste products. Lower if experiencing lag from too many special drops.">ℹ️</span></label>
                             <input type="number" id="DropItemMaxNum_UNKO" value="100" min="10" max="1000">
                         </div>
                         <div class="form-group">
-                            <label>Drop Item Lifetime (hours) <span class="tooltip" data-tip="How long dropped items stay in world (0.1-24)">ℹ️</span></label>
+                            <label>Drop Item Lifetime (hours) <span class="tooltip" data-tip="How long dropped items persist (0.1-24 hours). Default: 1 hour. Lower = cleaner world, higher = more time to retrieve items. Affects server cleanup.">ℹ️</span></label>
                             <input type="number" id="DropItemAliveMaxHours" value="1.000000" step="0.1" min="0.1" max="24.0">
                         </div>
                         <div class="form-group">
-                            <label>Supply Drop Interval (minutes) <span class="tooltip" data-tip="Time between supply drops (10-600)">ℹ️</span></label>
+                            <label>Supply Drop Interval (minutes) <span class="tooltip" data-tip="Time between supply drop events (10-600 minutes). Default: 180 (3 hours). Supply drops contain rare loot crates that spawn across the map.">ℹ️</span></label>
                             <input type="number" id="SupplyDropSpan" value="180" min="10" max="600">
                         </div>
                         <div class="form-group">
-                            <label>Equipment Durability Damage <span class="tooltip" data-tip="Equipment durability damage rate (0.1-10.0)">ℹ️</span></label>
+                            <label>Equipment Durability Damage <span class="tooltip" data-tip="Equipment durability loss rate (0.1-10.0). 1.0 = normal wear, 2.0 = break twice as fast, 0.5 = last twice as long. Affects repair frequency.">ℹ️</span></label>
                             <input type="number" id="EquipmentDurabilityDamageRate" value="1.000000" step="0.1" min="0.1" max="10.0">
                         </div>
                         <div class="form-group">
-                            <label>Item Corruption Multiplier <span class="tooltip" data-tip="Item corruption rate multiplier (0.1-10.0)">ℹ️</span></label>
+                            <label>Item Corruption Multiplier <span class="tooltip" data-tip="Item corruption/decay rate (0.1-10.0). Affects how fast items degrade or spoil. Higher = faster corruption, lower = items last longer in inventory.">ℹ️</span></label>
                             <input type="number" id="ItemCorruptionMultiplier" value="1.000000" step="0.1" min="0.1" max="10.0">
                         </div>
                     </div>
@@ -1177,11 +1525,11 @@
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bAutoResetGuildNoOnlinePlayers">
-                                Auto Reset Guild (No Online) <span class="tooltip" data-tip="Auto reset guild when no players online">ℹ️</span>
+                                Auto Reset Guild (No Online) <span class="tooltip" data-tip="Automatically reset/disband guilds when all members haven't logged in for specified time. Cleans up abandoned guilds and their bases from the server.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
-                            <label>Auto Reset Time (hours) <span class="tooltip" data-tip="Hours until guild auto-resets (1-168)">ℹ️</span></label>
+                            <label>Auto Reset Time (hours) <span class="tooltip" data-tip="Hours of inactivity before guild is auto-reset (1-168). Default: 72 hours (3 days). Guild is deleted and bases released if ALL members offline this long.">ℹ️</span></label>
                             <input type="number" id="AutoResetGuildTimeNoOnlinePlayers" value="72.000000" step="1" min="1" max="168">
                         </div>
                     </div>
@@ -1199,13 +1547,13 @@
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bEnableInvaderEnemy" checked>
-                                Enable Invader Enemies <span class="tooltip" data-tip="Enable enemy invasions">ℹ️</span>
+                                Enable Invader Enemies <span class="tooltip" data-tip="Enable enemy invasion/raid events at bases. When enabled, hostile Pals will periodically attack player bases. Disable for peaceful base building.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bActiveUNKO">
-                                Active UNKO <span class="tooltip" data-tip="Enable special UNKO feature">ℹ️</span>
+                                Active UNKO <span class="tooltip" data-tip="Enable special/poop drops from Pals. Pal waste products can be used as fertilizer or special resources. Disable to remove this mechanic entirely.">ℹ️</span>
                             </label>
                         </div>
                     </div>
@@ -1221,19 +1569,19 @@
                     </div>
                     <div class="section-content">
                         <div class="form-group">
-                            <label>Auto Save Interval (minutes) <span class="tooltip" data-tip="Time between auto-saves (5-60)">ℹ️</span></label>
+                            <label>Auto Save Interval (minutes) <span class="tooltip" data-tip="Time between auto-saves (5-60 minutes). Default: 30. More frequent = safer but higher disk usage. Less frequent = better performance but more potential data loss.">ℹ️</span></label>
                             <input type="number" id="AutoSaveSpan" value="30.000000" step="1" min="5" max="60">
                         </div>
                         <div class="form-group">
-                            <label>Chat Post Limit/Min <span class="tooltip" data-tip="Maximum chat messages per minute (1-100)">ℹ️</span></label>
+                            <label>Chat Post Limit/Min <span class="tooltip" data-tip="Max chat messages per player per minute (1-100). Default: 30. Prevents chat spam. Lower = stricter anti-spam, higher = more freedom.">ℹ️</span></label>
                             <input type="number" id="ChatPostLimitPerMinute" value="30" min="1" max="100">
                         </div>
                         <div class="form-group">
-                            <label>Ban List URL <span class="tooltip" data-tip="URL to ban list">ℹ️</span></label>
+                            <label>Ban List URL <span class="tooltip" data-tip="URL to external ban list. Server will automatically ban players on this list. Official URL auto-bans known cheaters. Leave empty to disable.">ℹ️</span></label>
                             <input type="text" id="BanListURL" value="https://api.palworldgame.com/api/banlist.txt">
                         </div>
                         <div class="form-group">
-                            <label>Log Format Type <span class="tooltip" data-tip="Server log format type">ℹ️</span></label>
+                            <label>Log Format Type <span class="tooltip" data-tip="Server log file format. Text = human-readable logs, JSON = machine-readable for log analysis tools. Choose JSON if using log parsers.">ℹ️</span></label>
                             <select id="LogFormatType">
                                 <option value="Text" selected>Text</option>
                                 <option value="JSON">JSON</option>
@@ -1242,15 +1590,15 @@
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="bIsUseBackupSaveData" checked>
-                                Use Backup Save Data <span class="tooltip" data-tip="Enable automatic backup saves">ℹ️</span>
+                                Use Backup Save Data <span class="tooltip" data-tip="Enable automatic save backups. Creates rolling backups: 5 every 30sec, 6 every 10min, 12 hourly, 7 daily. Critical for data protection!">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
-                            <label>Item Container Dirty Interval <span class="tooltip" data-tip="Container update interval in seconds (0.1-10)">ℹ️</span></label>
+                            <label>Item Container Dirty Interval <span class="tooltip" data-tip="Seconds between chest/container state updates (0.1-10). Higher = better performance but slower container sync. Lower = real-time updates but more server load.">ℹ️</span></label>
                             <input type="number" id="ItemContainerForceMarkDirtyInterval" value="1.000000" step="0.1" min="0.1" max="10.0">
                         </div>
                         <div class="form-group">
-                            <label>Server Pawn Cull Distance <span class="tooltip" data-tip="Distance to cull pawns (1000-50000)">ℹ️</span></label>
+                            <label>Server Pawn Cull Distance <span class="tooltip" data-tip="Distance in units before entities are hidden/culled (1000-50000). Lower = better performance, higher = see farther. Affects view distance of Pals/players.">ℹ️</span></label>
                             <input type="number" id="ServerReplicatePawnCullDistance" value="15000.000000" step="1000" min="1000" max="50000">
                         </div>
                     </div>
@@ -1268,21 +1616,21 @@
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="RCONEnabled">
-                                Enable RCON <span class="tooltip" data-tip="Enable Remote Console">ℹ️</span>
+                                Enable RCON <span class="tooltip" data-tip="Enable Remote Console protocol for server administration. Allows sending commands remotely using RCON tools. Must be port forwarded if using remotely.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
-                            <label>RCON Port <span class="tooltip" data-tip="Port for RCON (1024-65535)">ℹ️</span></label>
+                            <label>RCON Port <span class="tooltip" data-tip="RCON connection port (1024-65535). Default: 25575. Must differ from game port. Use for remote admin tools. Remember to forward this port!">ℹ️</span></label>
                             <input type="number" id="RCONPort" value="25575" min="1024" max="65535">
                         </div>
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="RESTAPIEnabled">
-                                Enable REST API <span class="tooltip" data-tip="Enable REST API for server management">ℹ️</span>
+                                Enable REST API <span class="tooltip" data-tip="Enable REST API for web-based server management and monitoring. Allows external tools/websites to query server status and send commands via HTTP.">ℹ️</span>
                             </label>
                         </div>
                         <div class="form-group">
-                            <label>REST API Port <span class="tooltip" data-tip="Port for REST API (1024-65535)">ℹ️</span></label>
+                            <label>REST API Port <span class="tooltip" data-tip="REST API HTTP port (1024-65535). Default: 8212. Used by web dashboards and monitoring tools. Ensure firewall allows if using externally.">ℹ️</span></label>
                             <input type="number" id="RESTAPIPort" value="8212" min="1024" max="65535">
                         </div>
                     </div>
@@ -1304,6 +1652,33 @@
             header.classList.toggle('collapsed');
             const content = header.nextElementSibling;
             content.classList.toggle('collapsed');
+        }
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.querySelector('.theme-icon');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
+            const body = document.body;
+            const themeIcon = document.querySelector('.theme-icon');
+            
+            body.setAttribute('data-theme', savedTheme);
+            themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
         }
 
         // Get all crossplay platforms
@@ -1496,6 +1871,83 @@
             }, 5000);
         }
 
+        // Slider sync helper function
+        function syncSlider(inputId) {
+            const input = document.getElementById(inputId);
+            const slider = document.getElementById(inputId + '_slider');
+            const valueDisplay = document.getElementById(inputId + '_value');
+
+            if (!slider || !valueDisplay) return;
+
+            const value = parseFloat(input.value);
+            slider.value = value;
+
+            // Update display with appropriate suffix
+            let displayValue = value.toFixed(1);
+            if (input.getAttribute('data-suffix')) {
+                displayValue += input.getAttribute('data-suffix');
+            } else {
+                displayValue += 'x';
+            }
+            valueDisplay.textContent = displayValue;
+
+            // Update color coding
+            valueDisplay.className = 'slider-value';
+            if (value < 0.5) {
+                valueDisplay.classList.add('value-low');
+            } else if (value >= 0.5 && value <= 1.5) {
+                valueDisplay.classList.add('value-normal');
+            } else if (value > 1.5 && value <= 3.0) {
+                valueDisplay.classList.add('value-high');
+            } else {
+                valueDisplay.classList.add('value-extreme');
+            }
+        }
+
+        function syncInput(sliderId) {
+            const slider = document.getElementById(sliderId);
+            const inputId = sliderId.replace('_slider', '');
+            const input = document.getElementById(inputId);
+            const valueDisplay = document.getElementById(inputId + '_value');
+
+            if (!input || !valueDisplay) return;
+
+            const value = parseFloat(slider.value);
+            input.value = value.toFixed(6);
+
+            // Update display
+            let displayValue = value.toFixed(1);
+            if (input.getAttribute('data-suffix')) {
+                displayValue += input.getAttribute('data-suffix');
+            } else {
+                displayValue += 'x';
+            }
+            valueDisplay.textContent = displayValue;
+
+            // Update color coding
+            valueDisplay.className = 'slider-value';
+            if (value < 0.5) {
+                valueDisplay.classList.add('value-low');
+            } else if (value >= 0.5 && value <= 1.5) {
+                valueDisplay.classList.add('value-normal');
+            } else if (value > 1.5 && value <= 3.0) {
+                valueDisplay.classList.add('value-high');
+            } else {
+                valueDisplay.classList.add('value-extreme');
+            }
+        }
+
+        // Initialize all sliders
+        function initializeSliders() {
+            document.querySelectorAll('input[type="range"]').forEach(slider => {
+                const inputId = slider.id.replace('_slider', '');
+                const input = document.getElementById(inputId);
+                if (input) {
+                    syncSlider(inputId);
+                }
+            });
+        }
+
         // Apply preset configurations
         function applyPreset(preset) {
             if (!confirm(`Apply ${preset.charAt(0).toUpperCase() + preset.slice(1)} Mode preset? This will override your current settings.`)) {
@@ -1564,10 +2016,16 @@
             document.getElementById('bAllowGlobalPalboxExport').checked = true;
             document.getElementById('EnablePredatorBossPal').checked = true;
             document.querySelectorAll('[id^="platform_"]').forEach(cb => cb.checked = true);
+
+            // Sync all sliders after preset application
+            initializeSliders();
         }
 
         // Initialize - set default values
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize theme (dark mode as default)
+            initializeTheme();
+            
             // Set default checkboxes
             document.getElementById('bUseAuth').checked = true;
             document.getElementById('bEnableInvaderEnemy').checked = true;
@@ -1578,6 +2036,9 @@
             document.getElementById('bIsUseBackupSaveData').checked = true;
             document.getElementById('bAllowGlobalPalboxExport').checked = true;
             document.getElementById('EnablePredatorBossPal').checked = true;
+
+            // Initialize all sliders
+            initializeSliders();
         });
     </script>
 </body>
