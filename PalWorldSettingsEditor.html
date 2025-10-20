@@ -544,9 +544,43 @@
             color: #742a2a;
         }
 
+        .btn-preset.builder {
+            border-color: #ed8936; /* orange */
+            color: #7b341e;
+        }
+
+        .btn-preset.progression {
+            border-color: #9f7aea; /* purple */
+            color: #44337a;
+        }
+
+        .btn-preset.lootfest {
+            border-color: #d69e2e; /* gold */
+            color: #744210;
+        }
+
         .preset-icon {
             width: 16px;
             height: 16px;
+        }
+
+        /* Validation tips */
+        .input-error-tip {
+            color: #e53e3e;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+        .has-error input[type="number"] {
+            border-color: #e53e3e;
+            outline: none;
+        }
+        .has-error .slider-value {
+            color: #e53e3e;
+        }
+        input[type="url"]:invalid,
+        input[pattern]:invalid {
+            border-color: #e53e3e;
         }
 
         .form-group {
@@ -908,6 +942,18 @@
                 <svg class="preset-icon"><use href="#icon-hardcore"/></svg>
                 Hardcore Mode
             </button>
+            <button class="btn-preset builder" onclick="applyPreset('builder')">
+                <svg class="preset-icon"><use href="#icon-building"/></svg>
+                Builder Mode
+            </button>
+            <button class="btn-preset progression" onclick="applyPreset('progression')">
+                <svg class="preset-icon"><use href="#icon-gameplay"/></svg>
+                Fast Progression
+            </button>
+            <button class="btn-preset lootfest" onclick="applyPreset('lootfest')">
+                <svg class="preset-icon"><use href="#icon-resources"/></svg>
+                Lootfest
+            </button>
         </div>
 
         <div class="controls">
@@ -917,6 +963,8 @@
                 </button>
                 <input type="file" id="fileInput" accept=".ini" onchange="loadFromFile(event)">
             </div>
+            <button class="btn btn-primary" onclick="loadFromText()">Load from INI Text</button>
+            <div class="spacer"></div>
             <button class="btn btn-secondary" onclick="generateINI()">✅ Generate INI Output</button>
             <button class="btn btn-secondary" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
             <button class="btn btn-danger" onclick="resetToDefaults()">🔄 Reset to Defaults</button>
@@ -964,7 +1012,7 @@
                         </div>
                         <div class="form-group">
                             <label>Public IP <span class="tooltip" data-tip="Your server's external IP address for manual network configuration. Usually auto-detected. Only set if having connection issues.">ℹ️</span></label>
-                            <input type="text" id="PublicIP" value="">
+                            <input type="text" id="PublicIP" value="" pattern="^(?:(?:\d{1,3}\.){3}\d{1,3}|[A-Za-z0-9.-]+)$" title="Enter a valid IPv4 or hostname">
                         </div>
                         <div class="form-group">
                             <label>Public Port <span class="tooltip" data-tip="Port for game connections. Default is 8211. Must be forwarded in your router if hosting from home. Players connect using IP:Port.">ℹ️</span></label>
@@ -1578,7 +1626,7 @@
                         </div>
                         <div class="form-group">
                             <label>Ban List URL <span class="tooltip" data-tip="URL to external ban list. Server will automatically ban players on this list. Official URL auto-bans known cheaters. Leave empty to disable.">ℹ️</span></label>
-                            <input type="text" id="BanListURL" value="https://api.palworldgame.com/api/banlist.txt">
+                            <input type="url" id="BanListURL" value="https://api.palworldgame.com/api/banlist.txt" placeholder="https://...">
                         </div>
                         <div class="form-group">
                             <label>Log Format Type <span class="tooltip" data-tip="Server log file format. Text = human-readable logs, JSON = machine-readable for log analysis tools. Choose JSON if using log parsers.">ℹ️</span></label>
@@ -1640,7 +1688,7 @@
             <!-- Output Section -->
             <div class="output-section">
                 <h3>Generated PalWorldSettings.ini Content</h3>
-                <textarea id="output" readonly placeholder="Click 'Generate INI Output' to see the configuration file content here..."></textarea>
+                <textarea id="output" placeholder="Paste INI here or generate output..."></textarea>
                 <div id="copySuccess" class="success-message"></div>
             </div>
         </div>
@@ -1699,13 +1747,11 @@
 
         // Generate INI file content
         function generateINI() {
-            const platforms = getCrossplayPlatforms();
-
-            const settings = `OptionSettings=(Difficulty=${document.getElementById('Difficulty').value},RandomizerType=${document.getElementById('RandomizerType').value},RandomizerSeed="${document.getElementById('RandomizerSeed').value}",bIsRandomizerPalLevelRandom=${formatBoolean(document.getElementById('bIsRandomizerPalLevelRandom').checked)},DayTimeSpeedRate=${document.getElementById('DayTimeSpeedRate').value},NightTimeSpeedRate=${document.getElementById('NightTimeSpeedRate').value},ExpRate=${document.getElementById('ExpRate').value},PalCaptureRate=${document.getElementById('PalCaptureRate').value},PalSpawnNumRate=${document.getElementById('PalSpawnNumRate').value},PalDamageRateAttack=${document.getElementById('PalDamageRateAttack').value},PalDamageRateDefense=${document.getElementById('PalDamageRateDefense').value},PlayerDamageRateAttack=${document.getElementById('PlayerDamageRateAttack').value},PlayerDamageRateDefense=${document.getElementById('PlayerDamageRateDefense').value},PlayerStomachDecreaceRate=${document.getElementById('PlayerStomachDecreaceRate').value},PlayerStaminaDecreaceRate=${document.getElementById('PlayerStaminaDecreaceRate').value},PlayerAutoHPRegeneRate=${document.getElementById('PlayerAutoHPRegeneRate').value},PlayerAutoHpRegeneRateInSleep=${document.getElementById('PlayerAutoHpRegeneRateInSleep').value},PalStomachDecreaceRate=${document.getElementById('PalStomachDecreaceRate').value},PalStaminaDecreaceRate=${document.getElementById('PalStaminaDecreaceRate').value},PalAutoHPRegeneRate=${document.getElementById('PalAutoHPRegeneRate').value},PalAutoHpRegeneRateInSleep=${document.getElementById('PalAutoHpRegeneRateInSleep').value},BuildObjectHpRate=${document.getElementById('BuildObjectHpRate').value},BuildObjectDamageRate=${document.getElementById('BuildObjectDamageRate').value},BuildObjectDeteriorationDamageRate=${document.getElementById('BuildObjectDeteriorationDamageRate').value},CollectionDropRate=${document.getElementById('CollectionDropRate').value},CollectionObjectHpRate=${document.getElementById('CollectionObjectHpRate').value},CollectionObjectRespawnSpeedRate=${document.getElementById('CollectionObjectRespawnSpeedRate').value},EnemyDropItemRate=${document.getElementById('EnemyDropItemRate').value},DeathPenalty=${document.getElementById('DeathPenalty').value},bEnablePlayerToPlayerDamage=${formatBoolean(document.getElementById('bEnablePlayerToPlayerDamage').checked)},bEnableFriendlyFire=${formatBoolean(document.getElementById('bEnableFriendlyFire').checked)},bEnableInvaderEnemy=${formatBoolean(document.getElementById('bEnableInvaderEnemy').checked)},bActiveUNKO=${formatBoolean(document.getElementById('bActiveUNKO').checked)},bEnableAimAssistPad=${formatBoolean(document.getElementById('bEnableAimAssistPad').checked)},bEnableAimAssistKeyboard=${formatBoolean(document.getElementById('bEnableAimAssistKeyboard').checked)},DropItemMaxNum=${document.getElementById('DropItemMaxNum').value},DropItemMaxNum_UNKO=${document.getElementById('DropItemMaxNum_UNKO').value},BaseCampMaxNum=${document.getElementById('BaseCampMaxNum').value},BaseCampWorkerMaxNum=${document.getElementById('BaseCampWorkerMaxNum').value},DropItemAliveMaxHours=${document.getElementById('DropItemAliveMaxHours').value},bAutoResetGuildNoOnlinePlayers=${formatBoolean(document.getElementById('bAutoResetGuildNoOnlinePlayers').checked)},AutoResetGuildTimeNoOnlinePlayers=${document.getElementById('AutoResetGuildTimeNoOnlinePlayers').value},GuildPlayerMaxNum=${document.getElementById('GuildPlayerMaxNum').value},BaseCampMaxNumInGuild=${document.getElementById('BaseCampMaxNumInGuild').value},PalEggDefaultHatchingTime=${document.getElementById('PalEggDefaultHatchingTime').value},WorkSpeedRate=${document.getElementById('WorkSpeedRate').value},AutoSaveSpan=${document.getElementById('AutoSaveSpan').value},bIsMultiplay=${formatBoolean(document.getElementById('bIsMultiplay').checked)},bIsPvP=${formatBoolean(document.getElementById('bIsPvP').checked)},bHardcore=${formatBoolean(document.getElementById('bHardcore').checked)},bPalLost=${formatBoolean(document.getElementById('bPalLost').checked)},bCharacterRecreateInHardcore=${formatBoolean(document.getElementById('bCharacterRecreateInHardcore').checked)},bCanPickupOtherGuildDeathPenaltyDrop=${formatBoolean(document.getElementById('bCanPickupOtherGuildDeathPenaltyDrop').checked)},bEnableNonLoginPenalty=${formatBoolean(document.getElementById('bEnableNonLoginPenalty').checked)},bEnableFastTravel=${formatBoolean(document.getElementById('bEnableFastTravel').checked)},bIsStartLocationSelectByMap=${formatBoolean(document.getElementById('bIsStartLocationSelectByMap').checked)},bExistPlayerAfterLogout=${formatBoolean(document.getElementById('bExistPlayerAfterLogout').checked)},bEnableDefenseOtherGuildPlayer=${formatBoolean(document.getElementById('bEnableDefenseOtherGuildPlayer').checked)},bInvisibleOtherGuildBaseCampAreaFX=${formatBoolean(document.getElementById('bInvisibleOtherGuildBaseCampAreaFX').checked)},bBuildAreaLimit=${formatBoolean(document.getElementById('bBuildAreaLimit').checked)},ItemWeightRate=${document.getElementById('ItemWeightRate').value},CoopPlayerMaxNum=${document.getElementById('CoopPlayerMaxNum').value},ServerPlayerMaxNum=${document.getElementById('ServerPlayerMaxNum').value},ServerName="${document.getElementById('ServerName').value}",ServerDescription="${document.getElementById('ServerDescription').value}",AdminPassword="${document.getElementById('AdminPassword').value}",ServerPassword="${document.getElementById('ServerPassword').value}",PublicPort=${document.getElementById('PublicPort').value},PublicIP="${document.getElementById('PublicIP').value}",RCONEnabled=${formatBoolean(document.getElementById('RCONEnabled').checked)},RCONPort=${document.getElementById('RCONPort').value},Region="${document.getElementById('Region').value}",bUseAuth=${formatBoolean(document.getElementById('bUseAuth').checked)},BanListURL="${document.getElementById('BanListURL').value}",RESTAPIEnabled=${formatBoolean(document.getElementById('RESTAPIEnabled').checked)},RESTAPIPort=${document.getElementById('RESTAPIPort').value},bShowPlayerList=${formatBoolean(document.getElementById('bShowPlayerList').checked)},ChatPostLimitPerMinute=${document.getElementById('ChatPostLimitPerMinute').value},CrossplayPlatforms=(${platforms}),bIsUseBackupSaveData=${formatBoolean(document.getElementById('bIsUseBackupSaveData').checked)},LogFormatType=${document.getElementById('LogFormatType').value},SupplyDropSpan=${document.getElementById('SupplyDropSpan').value},EnablePredatorBossPal=${formatBoolean(document.getElementById('EnablePredatorBossPal').checked)},MaxBuildingLimitNum=${document.getElementById('MaxBuildingLimitNum').value},ServerReplicatePawnCullDistance=${document.getElementById('ServerReplicatePawnCullDistance').value},bAllowGlobalPalboxExport=${formatBoolean(document.getElementById('bAllowGlobalPalboxExport').checked)},bAllowGlobalPalboxImport=${formatBoolean(document.getElementById('bAllowGlobalPalboxImport').checked)},EquipmentDurabilityDamageRate=${document.getElementById('EquipmentDurabilityDamageRate').value},ItemContainerForceMarkDirtyInterval=${document.getElementById('ItemContainerForceMarkDirtyInterval').value},ItemCorruptionMultiplier=${document.getElementById('ItemCorruptionMultiplier').value})`;
-
-            const output = `[/Script/Pal.PalGameWorldSettings]\n${settings}`;
-            document.getElementById('output').value = output;
-
+            const outEl = document.getElementById('output');
+            const output = buildINIContent();
+            suppressOutputListener = true;
+            outEl.value = output;
+            suppressOutputListener = false;
             showMessage('successMessage', 'INI file content generated successfully!');
         }
 
@@ -1756,9 +1802,35 @@
             reader.readAsText(file);
         }
 
+        // Load settings from pasted INI text (from the output textarea)
+        function loadFromText() {
+            const ta = document.getElementById('output');
+            if (!ta) {
+                showMessage('errorMessage', 'Paste area not found.');
+                return;
+            }
+            const content = ta.value.trim();
+            if (!content) {
+                showMessage('errorMessage', 'Paste INI content into the text area first.');
+                return;
+            }
+            try {
+                parseINI(content);
+                showMessage('successMessage', 'Settings loaded from pasted INI successfully!');
+            } catch (error) {
+                showMessage('errorMessage', 'Error parsing INI text: ' + error.message);
+            }
+        }
+
         // Parse INI content and populate form
         function parseINI(content) {
-            const match = content.match(/OptionSettings=\((.*)\)/s);
+            let match = content.match(/OptionSettings\=\((.*)\)/s);
+            if (!match) {
+                const parenOnly = content.match(/^\s*\((.*)\)\s*$/s);
+                if (parenOnly) {
+                    match = parenOnly;
+                }
+            }
             if (!match) {
                 throw new Error('Invalid INI format');
             }
@@ -1816,6 +1888,8 @@
                 if (element) {
                     if (element.type === 'checkbox') {
                         element.checked = value === 'True' || value === 'true';
+                    } else if (element.type === 'number') {
+                        element.value = clampToInput(element, value);
                     } else {
                         element.value = value;
                     }
@@ -1829,6 +1903,8 @@
                     cb.checked = platforms.includes(cb.value);
                 });
             }
+            // Re-sync sliders after parsing INI content
+            initializeSliders();
         }
 
         // Reset to defaults
@@ -1853,6 +1929,9 @@
             // Reset all platform checkboxes
             document.querySelectorAll('[id^="platform_"]').forEach(cb => cb.checked = true);
 
+            // Re-sync sliders to reflect default values
+            initializeSliders();
+
             showMessage('successMessage', 'All settings reset to defaults!');
         }
 
@@ -1871,6 +1950,111 @@
             }, 5000);
         }
 
+        // Global flags to coordinate textarea <-> sliders sync
+        let suppressOutputListener = false;    // avoid parsing when programmatically updating textarea
+        let isApplyingFromOutput = false;      // avoid regenerating output while applying parsed values
+
+        // Helper: decimals from step attribute
+        function getStepDecimals(el) {
+            if (!el) return null;
+            const stepAttr = el.getAttribute('step');
+            if (!stepAttr || stepAttr === 'any') return null;
+            if (stepAttr.includes('.')) {
+                const parts = stepAttr.split('.')
+                return parts[1] ? parts[1].length : 0;
+            }
+            return 0;
+        }
+
+        // Helper: format value for display (avoid redundant decimals)
+        function formatDisplayValue(inputEl, value) {
+            const stepDecimals = getStepDecimals(inputEl);
+            let base;
+            if (stepDecimals === null) {
+                base = Number.isInteger(value) ? String(Math.round(value)) : value.toFixed(1);
+            } else if (stepDecimals === 0) {
+                base = String(Math.round(value));
+            } else {
+                base = value.toFixed(stepDecimals);
+            }
+            const hasSuffix = inputEl && inputEl.hasAttribute('data-suffix');
+            const suffix = hasSuffix ? (inputEl.getAttribute('data-suffix') || '') : 'x';
+            return base + suffix;
+        }
+
+        // Clamp a numeric value to an input's min/max and align to step
+        function clampToInput(inputEl, raw) {
+            let val = parseFloat(raw);
+            if (isNaN(val)) val = parseFloat(inputEl.value) || 0;
+            const minAttr = inputEl.getAttribute('min');
+            const maxAttr = inputEl.getAttribute('max');
+            const stepAttr = inputEl.getAttribute('step');
+            const min = (minAttr !== null && minAttr !== '') ? parseFloat(minAttr) : null;
+            const max = (maxAttr !== null && maxAttr !== '') ? parseFloat(maxAttr) : null;
+            if (min !== null && val < min) val = min;
+            if (max !== null && val > max) val = max;
+            if (stepAttr && stepAttr !== 'any') {
+                const step = parseFloat(stepAttr);
+                if (!isNaN(step) && step > 0) {
+                    const anchor = (min !== null) ? min : 0;
+                    val = anchor + Math.round((val - anchor) / step) * step;
+                }
+            }
+            // Respect decimals for display in number input
+            const dec = getStepDecimals(inputEl);
+            if (dec === null) {
+                return Number.isInteger(val) ? String(Math.round(val)) : String(val);
+            } else if (dec === 0) {
+                return String(Math.round(val));
+            } else {
+                return (val).toFixed(dec);
+            }
+        }
+
+        function getWrapper(el) {
+            return el.closest('.input-slider-wrapper') || el.parentElement;
+        }
+
+        function showInputError(inputEl, message) {
+            const wrapper = getWrapper(inputEl);
+            if (!wrapper) return;
+            wrapper.classList.add('has-error');
+            let tip = document.getElementById(inputEl.id + '_error');
+            if (!tip) {
+                tip = document.createElement('div');
+                tip.id = inputEl.id + '_error';
+                tip.className = 'input-error-tip';
+                wrapper.appendChild(tip);
+            }
+            tip.textContent = message;
+            tip.style.display = 'block';
+        }
+
+        function clearInputError(inputEl) {
+            const wrapper = getWrapper(inputEl);
+            if (!wrapper) return;
+            wrapper.classList.remove('has-error');
+            const tip = document.getElementById(inputEl.id + '_error');
+            if (tip) tip.style.display = 'none';
+        }
+
+        function setValueFormatted(id, raw) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el.type === 'number') {
+                el.value = clampToInput(el, raw);
+                clearInputError(el);
+            } else {
+                el.value = raw;
+            }
+            const slider = document.getElementById(id + '_slider');
+            if (slider) {
+                syncSlider(id);
+            } else {
+                updateOutputRealtimeIfNeeded();
+            }
+        }
+
         // Slider sync helper function
         function syncSlider(inputId) {
             const input = document.getElementById(inputId);
@@ -1882,14 +2066,8 @@
             const value = parseFloat(input.value);
             slider.value = value;
 
-            // Update display with appropriate suffix
-            let displayValue = value.toFixed(1);
-            if (input.getAttribute('data-suffix')) {
-                displayValue += input.getAttribute('data-suffix');
-            } else {
-                displayValue += 'x';
-            }
-            valueDisplay.textContent = displayValue;
+            // Update display with appropriate suffix/precision
+            valueDisplay.textContent = formatDisplayValue(input, value);
 
             // Update color coding
             valueDisplay.className = 'slider-value';
@@ -1902,6 +2080,9 @@
             } else {
                 valueDisplay.classList.add('value-extreme');
             }
+
+            // Reflect to output textarea if appropriate
+            updateOutputRealtimeIfNeeded();
         }
 
         function syncInput(sliderId) {
@@ -1913,16 +2094,18 @@
             if (!input || !valueDisplay) return;
 
             const value = parseFloat(slider.value);
-            input.value = value.toFixed(6);
+            // Respect input step when writing back
+            const stepDecimals = getStepDecimals(input);
+            if (stepDecimals === null) {
+                input.value = Number.isInteger(value) ? String(Math.round(value)) : value.toString();
+            } else if (stepDecimals === 0) {
+                input.value = String(Math.round(value));
+            } else {
+                input.value = value.toFixed(stepDecimals);
+            }
 
             // Update display
-            let displayValue = value.toFixed(1);
-            if (input.getAttribute('data-suffix')) {
-                displayValue += input.getAttribute('data-suffix');
-            } else {
-                displayValue += 'x';
-            }
-            valueDisplay.textContent = displayValue;
+            valueDisplay.textContent = formatDisplayValue(input, value);
 
             // Update color coding
             valueDisplay.className = 'slider-value';
@@ -1935,6 +2118,9 @@
             } else {
                 valueDisplay.classList.add('value-extreme');
             }
+
+            // Reflect to output textarea if appropriate
+            updateOutputRealtimeIfNeeded();
         }
 
         // Initialize all sliders
@@ -1945,6 +2131,155 @@
                 if (input) {
                     syncSlider(inputId);
                 }
+            });
+            // Ensure number inputs respect bounds and keep output synced
+            document.querySelectorAll('input[type="number"]').forEach(num => {
+                num.addEventListener('input', () => {
+                    const rawStr = num.value;
+                    const formatted = clampToInput(num, rawStr);
+                    const rawNum = parseFloat(rawStr);
+                    const formattedNum = parseFloat(formatted);
+                    const changed = rawStr.trim() === '' || isNaN(rawNum) || Math.abs((rawNum || 0) - (formattedNum || 0)) > 1e-9;
+                    num.value = formatted;
+                    if (changed) {
+                        const min = num.getAttribute('min');
+                        const max = num.getAttribute('max');
+                        const step = num.getAttribute('step');
+                        let msg = 'Adjusted to ' + formatted;
+                        const parts = [];
+                        if (min !== null && min !== '') parts.push('min ' + min);
+                        if (max !== null && max !== '') parts.push('max ' + max);
+                        if (step && step !== 'any') parts.push('step ' + step);
+                        if (parts.length) msg += ' (' + parts.join(', ') + ')';
+                        showInputError(num, msg);
+                    } else {
+                        clearInputError(num);
+                    }
+                    // If this number has an associated slider, update it
+                    const slider = document.getElementById(num.id + '_slider');
+                    if (slider) {
+                        syncSlider(num.id);
+                    } else {
+                        // No slider (e.g., ports) — still update output in realtime
+                        updateOutputRealtimeIfNeeded();
+                    }
+                });
+                num.addEventListener('change', () => {
+                    num.value = clampToInput(num, num.value);
+                    clearInputError(num);
+                    const slider = document.getElementById(num.id + '_slider');
+                    if (slider) {
+                        syncSlider(num.id);
+                    } else {
+                        updateOutputRealtimeIfNeeded();
+                    }
+                });
+            });
+        }
+
+        // Build INI content from current form values (shared by generator and realtime updates)
+        function buildINIContent() {
+            const platforms = getCrossplayPlatforms();
+            const settings = `OptionSettings=(Difficulty=${document.getElementById('Difficulty').value},RandomizerType=${document.getElementById('RandomizerType').value},RandomizerSeed="${document.getElementById('RandomizerSeed').value}",bIsRandomizerPalLevelRandom=${formatBoolean(document.getElementById('bIsRandomizerPalLevelRandom').checked)},DayTimeSpeedRate=${document.getElementById('DayTimeSpeedRate').value},NightTimeSpeedRate=${document.getElementById('NightTimeSpeedRate').value},ExpRate=${document.getElementById('ExpRate').value},PalCaptureRate=${document.getElementById('PalCaptureRate').value},PalSpawnNumRate=${document.getElementById('PalSpawnNumRate').value},PalDamageRateAttack=${document.getElementById('PalDamageRateAttack').value},PalDamageRateDefense=${document.getElementById('PalDamageRateDefense').value},PlayerDamageRateAttack=${document.getElementById('PlayerDamageRateAttack').value},PlayerDamageRateDefense=${document.getElementById('PlayerDamageRateDefense').value},PlayerStomachDecreaceRate=${document.getElementById('PlayerStomachDecreaceRate').value},PlayerStaminaDecreaceRate=${document.getElementById('PlayerStaminaDecreaceRate').value},PlayerAutoHPRegeneRate=${document.getElementById('PlayerAutoHPRegeneRate').value},PlayerAutoHpRegeneRateInSleep=${document.getElementById('PlayerAutoHpRegeneRateInSleep').value},PalStomachDecreaceRate=${document.getElementById('PalStomachDecreaceRate').value},PalStaminaDecreaceRate=${document.getElementById('PalStaminaDecreaceRate').value},PalAutoHPRegeneRate=${document.getElementById('PalAutoHPRegeneRate').value},PalAutoHpRegeneRateInSleep=${document.getElementById('PalAutoHpRegeneRateInSleep').value},BuildObjectHpRate=${document.getElementById('BuildObjectHpRate').value},BuildObjectDamageRate=${document.getElementById('BuildObjectDamageRate').value},BuildObjectDeteriorationDamageRate=${document.getElementById('BuildObjectDeteriorationDamageRate').value},CollectionDropRate=${document.getElementById('CollectionDropRate').value},CollectionObjectHpRate=${document.getElementById('CollectionObjectHpRate').value},CollectionObjectRespawnSpeedRate=${document.getElementById('CollectionObjectRespawnSpeedRate').value},EnemyDropItemRate=${document.getElementById('EnemyDropItemRate').value},DeathPenalty=${document.getElementById('DeathPenalty').value},bEnablePlayerToPlayerDamage=${formatBoolean(document.getElementById('bEnablePlayerToPlayerDamage').checked)},bEnableFriendlyFire=${formatBoolean(document.getElementById('bEnableFriendlyFire').checked)},bEnableInvaderEnemy=${formatBoolean(document.getElementById('bEnableInvaderEnemy').checked)},bActiveUNKO=${formatBoolean(document.getElementById('bActiveUNKO').checked)},bEnableAimAssistPad=${formatBoolean(document.getElementById('bEnableAimAssistPad').checked)},bEnableAimAssistKeyboard=${formatBoolean(document.getElementById('bEnableAimAssistKeyboard').checked)},DropItemMaxNum=${document.getElementById('DropItemMaxNum').value},DropItemMaxNum_UNKO=${document.getElementById('DropItemMaxNum_UNKO').value},BaseCampMaxNum=${document.getElementById('BaseCampMaxNum').value},BaseCampWorkerMaxNum=${document.getElementById('BaseCampWorkerMaxNum').value},DropItemAliveMaxHours=${document.getElementById('DropItemAliveMaxHours').value},bAutoResetGuildNoOnlinePlayers=${formatBoolean(document.getElementById('bAutoResetGuildNoOnlinePlayers').checked)},AutoResetGuildTimeNoOnlinePlayers=${document.getElementById('AutoResetGuildTimeNoOnlinePlayers').value},GuildPlayerMaxNum=${document.getElementById('GuildPlayerMaxNum').value},BaseCampMaxNumInGuild=${document.getElementById('BaseCampMaxNumInGuild').value},PalEggDefaultHatchingTime=${document.getElementById('PalEggDefaultHatchingTime').value},WorkSpeedRate=${document.getElementById('WorkSpeedRate').value},AutoSaveSpan=${document.getElementById('AutoSaveSpan').value},bIsMultiplay=${formatBoolean(document.getElementById('bIsMultiplay').checked)},bIsPvP=${formatBoolean(document.getElementById('bIsPvP').checked)},bHardcore=${formatBoolean(document.getElementById('bHardcore').checked)},bPalLost=${formatBoolean(document.getElementById('bPalLost').checked)},bCharacterRecreateInHardcore=${formatBoolean(document.getElementById('bCharacterRecreateInHardcore').checked)},bCanPickupOtherGuildDeathPenaltyDrop=${formatBoolean(document.getElementById('bCanPickupOtherGuildDeathPenaltyDrop').checked)},bEnableNonLoginPenalty=${formatBoolean(document.getElementById('bEnableNonLoginPenalty').checked)},bEnableFastTravel=${formatBoolean(document.getElementById('bEnableFastTravel').checked)},bIsStartLocationSelectByMap=${formatBoolean(document.getElementById('bIsStartLocationSelectByMap').checked)},bExistPlayerAfterLogout=${formatBoolean(document.getElementById('bExistPlayerAfterLogout').checked)},bEnableDefenseOtherGuildPlayer=${formatBoolean(document.getElementById('bEnableDefenseOtherGuildPlayer').checked)},bInvisibleOtherGuildBaseCampAreaFX=${formatBoolean(document.getElementById('bInvisibleOtherGuildBaseCampAreaFX').checked)},bBuildAreaLimit=${formatBoolean(document.getElementById('bBuildAreaLimit').checked)},ItemWeightRate=${document.getElementById('ItemWeightRate').value},CoopPlayerMaxNum=${document.getElementById('CoopPlayerMaxNum').value},ServerPlayerMaxNum=${document.getElementById('ServerPlayerMaxNum').value},ServerName="${document.getElementById('ServerName').value}",ServerDescription="${document.getElementById('ServerDescription').value}",AdminPassword="${document.getElementById('AdminPassword').value}",ServerPassword="${document.getElementById('ServerPassword').value}",PublicPort=${document.getElementById('PublicPort').value},PublicIP="${document.getElementById('PublicIP').value}",RCONEnabled=${formatBoolean(document.getElementById('RCONEnabled').checked)},RCONPort=${document.getElementById('RCONPort').value},Region="${document.getElementById('Region').value}",bUseAuth=${formatBoolean(document.getElementById('bUseAuth').checked)},BanListURL="${document.getElementById('BanListURL').value}",RESTAPIEnabled=${formatBoolean(document.getElementById('RESTAPIEnabled').checked)},RESTAPIPort=${document.getElementById('RESTAPIPort').value},bShowPlayerList=${formatBoolean(document.getElementById('bShowPlayerList').checked)},ChatPostLimitPerMinute=${document.getElementById('ChatPostLimitPerMinute').value},CrossplayPlatforms=(${platforms}),bIsUseBackupSaveData=${formatBoolean(document.getElementById('bIsUseBackupSaveData').checked)},LogFormatType=${document.getElementById('LogFormatType').value},SupplyDropSpan=${document.getElementById('SupplyDropSpan').value},EnablePredatorBossPal=${formatBoolean(document.getElementById('EnablePredatorBossPal').checked)},MaxBuildingLimitNum=${document.getElementById('MaxBuildingLimitNum').value},ServerReplicatePawnCullDistance=${document.getElementById('ServerReplicatePawnCullDistance').value},bAllowGlobalPalboxExport=${formatBoolean(document.getElementById('bAllowGlobalPalboxExport').checked)},bAllowGlobalPalboxImport=${formatBoolean(document.getElementById('bAllowGlobalPalboxImport').checked)},EquipmentDurabilityDamageRate=${document.getElementById('EquipmentDurabilityDamageRate').value},ItemContainerForceMarkDirtyInterval=${document.getElementById('ItemContainerForceMarkDirtyInterval').value},ItemCorruptionMultiplier=${document.getElementById('ItemCorruptionMultiplier').value})`;
+            return `[/Script/Pal.PalGameWorldSettings]\n${settings}`;
+        }
+
+        // Update textarea content if it contains a generated OptionSettings, avoiding loops
+        function updateOutputRealtimeIfNeeded() {
+            if (isApplyingFromOutput) return; // don't overwrite user text while parsing it
+            const out = document.getElementById('output');
+            if (!out) return;
+            if (!out.value || out.value.indexOf('OptionSettings=(') === -1) return;
+            const content = buildINIContent();
+            suppressOutputListener = true;
+            out.value = content;
+            suppressOutputListener = false;
+        }
+
+        // Add sliders for number inputs that are missing them
+        function addSlidersForMissing() {
+            const ids = [
+                // Exclude network ports from sliders
+                'ServerPlayerMaxNum', 'CoopPlayerMaxNum', 'GuildPlayerMaxNum',
+                'PalEggDefaultHatchingTime', 'BaseCampMaxNum', 'BaseCampWorkerMaxNum', 'BaseCampMaxNumInGuild',
+                'MaxBuildingLimitNum', 'DropItemMaxNum', 'DropItemMaxNum_UNKO', 'DropItemAliveMaxHours', 'SupplyDropSpan',
+                'EquipmentDurabilityDamageRate', 'ItemCorruptionMultiplier', 'AutoResetGuildTimeNoOnlinePlayers',
+                'AutoSaveSpan', 'ChatPostLimitPerMinute', 'ItemContainerForceMarkDirtyInterval',
+                'ServerReplicatePawnCullDistance'
+            ];
+
+            const suffixMap = {
+                ServerPlayerMaxNum: ' players',
+                CoopPlayerMaxNum: ' players',
+                GuildPlayerMaxNum: ' players',
+                PalEggDefaultHatchingTime: ' h',
+                BaseCampMaxNum: ' bases',
+                BaseCampWorkerMaxNum: ' workers',
+                BaseCampMaxNumInGuild: ' bases',
+                MaxBuildingLimitNum: '',
+                DropItemMaxNum: ' items',
+                DropItemMaxNum_UNKO: ' items',
+                DropItemAliveMaxHours: ' h',
+                SupplyDropSpan: ' min',
+                AutoResetGuildTimeNoOnlinePlayers: ' h',
+                AutoSaveSpan: ' min',
+                ChatPostLimitPerMinute: ' /min',
+                ItemContainerForceMarkDirtyInterval: ' s',
+                ServerReplicatePawnCullDistance: ' u'
+            };
+
+            ids.forEach(id => {
+                const input = document.getElementById(id);
+                if (!input) return;
+
+                // Skip if slider already exists
+                if (document.getElementById(id + '_slider')) return;
+
+                // Mark suffix if provided
+                if (Object.prototype.hasOwnProperty.call(suffixMap, id)) {
+                    input.setAttribute('data-suffix', suffixMap[id]);
+                }
+
+                // Ensure number input updates slider when typing
+                input.setAttribute('oninput', "syncSlider('" + id + "')");
+
+                const parent = input.parentNode;
+                if (!parent) return;
+
+                // Create wrapper
+                const wrapper = document.createElement('div');
+                wrapper.className = 'input-slider-wrapper';
+
+                // Replace input with wrapper and append input inside
+                parent.replaceChild(wrapper, input);
+                wrapper.appendChild(input);
+
+                // Create range slider
+                const range = document.createElement('input');
+                range.type = 'range';
+                range.id = id + '_slider';
+                if (input.hasAttribute('min')) range.min = input.getAttribute('min');
+                if (input.hasAttribute('max')) range.max = input.getAttribute('max');
+                if (input.hasAttribute('step')) {
+                    range.step = input.getAttribute('step');
+                } else {
+                    // Default to integer steps for integer-like values
+                    const val = parseFloat(input.value);
+                    range.step = Number.isInteger(val) ? '1' : '0.1';
+                }
+                range.value = parseFloat(input.value) || 0;
+                range.setAttribute('oninput', "syncInput('" + range.id + "')");
+                wrapper.appendChild(range);
+
+                // Create value display span
+                const span = document.createElement('span');
+                span.className = 'slider-value';
+                span.id = id + '_value';
+                span.textContent = '';
+                wrapper.appendChild(span);
+
+                // Sync display
+                syncSlider(id);
             });
         }
 
@@ -1960,50 +2295,85 @@
             // Apply preset-specific values
             if (preset === 'casual') {
                 // Easier gameplay
-                document.getElementById('ExpRate').value = '2.000000';
-                document.getElementById('PalCaptureRate').value = '2.000000';
-                document.getElementById('PlayerDamageRateAttack').value = '1.5';
-                document.getElementById('PlayerDamageRateDefense').value = '0.7';
-                document.getElementById('PalDamageRateAttack').value = '1.3';
-                document.getElementById('EnemyDropItemRate').value = '2.0';
-                document.getElementById('CollectionDropRate').value = '2.0';
-                document.getElementById('WorkSpeedRate').value = '2.0';
+                setValueFormatted('ExpRate', '2');
+                setValueFormatted('PalCaptureRate', '2');
+                setValueFormatted('PlayerDamageRateAttack', '1.5');
+                setValueFormatted('PlayerDamageRateDefense', '0.7');
+                setValueFormatted('PalDamageRateAttack', '1.3');
+                setValueFormatted('EnemyDropItemRate', '2');
+                setValueFormatted('CollectionDropRate', '2');
+                setValueFormatted('WorkSpeedRate', '2');
                 document.getElementById('DeathPenalty').value = 'Item';
                 document.getElementById('bEnableFastTravel').checked = true;
-                document.getElementById('PalEggDefaultHatchingTime').value = '36.000000';
+                setValueFormatted('PalEggDefaultHatchingTime', '36');
                 showMessage('successMessage', 'Casual Mode preset applied! Easier gameplay with faster progression.');
             } else if (preset === 'normal') {
                 // Default balanced gameplay
-                document.getElementById('ExpRate').value = '1.000000';
-                document.getElementById('PalCaptureRate').value = '1.000000';
-                document.getElementById('PlayerDamageRateAttack').value = '1.000000';
-                document.getElementById('PlayerDamageRateDefense').value = '1.000000';
-                document.getElementById('PalDamageRateAttack').value = '1.000000';
-                document.getElementById('EnemyDropItemRate').value = '1.000000';
-                document.getElementById('CollectionDropRate').value = '1.000000';
-                document.getElementById('WorkSpeedRate').value = '1.000000';
+                setValueFormatted('ExpRate', '1');
+                setValueFormatted('PalCaptureRate', '1');
+                setValueFormatted('PlayerDamageRateAttack', '1');
+                setValueFormatted('PlayerDamageRateDefense', '1');
+                setValueFormatted('PalDamageRateAttack', '1');
+                setValueFormatted('EnemyDropItemRate', '1');
+                setValueFormatted('CollectionDropRate', '1');
+                setValueFormatted('WorkSpeedRate', '1');
                 document.getElementById('DeathPenalty').value = 'All';
                 document.getElementById('bEnableFastTravel').checked = true;
-                document.getElementById('PalEggDefaultHatchingTime').value = '72.000000';
+                setValueFormatted('PalEggDefaultHatchingTime', '72');
                 showMessage('successMessage', 'Normal Mode preset applied! Balanced default settings.');
             } else if (preset === 'hardcore') {
                 // Harder gameplay
-                document.getElementById('ExpRate').value = '0.5';
-                document.getElementById('PalCaptureRate').value = '0.5';
-                document.getElementById('PlayerDamageRateAttack').value = '0.8';
-                document.getElementById('PlayerDamageRateDefense').value = '1.5';
-                document.getElementById('PalDamageRateAttack').value = '0.7';
-                document.getElementById('EnemyDropItemRate').value = '0.5';
-                document.getElementById('CollectionDropRate').value = '0.7';
-                document.getElementById('WorkSpeedRate').value = '0.5';
+                setValueFormatted('ExpRate', '0.5');
+                setValueFormatted('PalCaptureRate', '0.5');
+                setValueFormatted('PlayerDamageRateAttack', '0.8');
+                setValueFormatted('PlayerDamageRateDefense', '1.5');
+                setValueFormatted('PalDamageRateAttack', '0.7');
+                setValueFormatted('EnemyDropItemRate', '0.5');
+                setValueFormatted('CollectionDropRate', '0.7');
+                setValueFormatted('WorkSpeedRate', '0.5');
                 document.getElementById('DeathPenalty').value = 'All';
                 document.getElementById('bHardcore').checked = true;
                 document.getElementById('bPalLost').checked = true;
                 document.getElementById('bEnableFastTravel').checked = false;
-                document.getElementById('PalEggDefaultHatchingTime').value = '120.000000';
-                document.getElementById('PlayerStomachDecreaceRate').value = '2.000000';
-                document.getElementById('PlayerStaminaDecreaceRate').value = '1.5';
+                setValueFormatted('PalEggDefaultHatchingTime', '120');
+                setValueFormatted('PlayerStomachDecreaceRate', '2');
+                setValueFormatted('PlayerStaminaDecreaceRate', '1.5');
                 showMessage('successMessage', 'Hardcore Mode preset applied! Challenging survival experience.');
+            } else if (preset === 'builder') {
+                // Base building focused
+                setValueFormatted('BuildObjectHpRate', '2');
+                setValueFormatted('BuildObjectDamageRate', '0.5');
+                setValueFormatted('BuildObjectDeteriorationDamageRate', '0.1');
+                setValueFormatted('WorkSpeedRate', '2');
+                setValueFormatted('CollectionDropRate', '1.5');
+                setValueFormatted('CollectionObjectHpRate', '0.8');
+                setValueFormatted('CollectionObjectRespawnSpeedRate', '1.5');
+                document.getElementById('bEnableInvaderEnemy').checked = false;
+                document.getElementById('DeathPenalty').value = 'Item';
+                setValueFormatted('PalEggDefaultHatchingTime', '48');
+                showMessage('successMessage', 'Builder Mode applied! Stronger buildings, faster work, fewer raids.');
+            } else if (preset === 'progression') {
+                // Fast progression leveling
+                setValueFormatted('ExpRate', '3');
+                setValueFormatted('PalCaptureRate', '1.8');
+                setValueFormatted('EnemyDropItemRate', '1.5');
+                setValueFormatted('CollectionDropRate', '1.5');
+                setValueFormatted('WorkSpeedRate', '1.5');
+                setValueFormatted('PalEggDefaultHatchingTime', '36');
+                document.getElementById('DeathPenalty').value = 'Item';
+                document.getElementById('bEnableFastTravel').checked = true;
+                showMessage('successMessage', 'Fast Progression applied! Faster leveling and catch rates.');
+            } else if (preset === 'lootfest') {
+                // High drop/resource server
+                setValueFormatted('CollectionDropRate', '3');
+                setValueFormatted('EnemyDropItemRate', '3');
+                setValueFormatted('CollectionObjectRespawnSpeedRate', '2');
+                setValueFormatted('EquipmentDurabilityDamageRate', '0.6');
+                setValueFormatted('ItemCorruptionMultiplier', '0.6');
+                setValueFormatted('DropItemMaxNum', '5000');
+                setValueFormatted('DropItemMaxNum_UNKO', '200');
+                setValueFormatted('DropItemAliveMaxHours', '2');
+                showMessage('successMessage', 'Lootfest applied! More drops, faster respawns, gear lasts longer.');
             }
 
             // Set common default checkboxes
@@ -2037,8 +2407,35 @@
             document.getElementById('bAllowGlobalPalboxExport').checked = true;
             document.getElementById('EnablePredatorBossPal').checked = true;
 
+            // Normalize number defaults to correct precision/limits
+            document.querySelectorAll('input[type="number"]').forEach(n => {
+                n.value = clampToInput(n, n.value);
+            });
+
+            // Add sliders for fields missing them, then initialize all sliders
+            addSlidersForMissing();
             // Initialize all sliders
             initializeSliders();
+
+            // Auto-parse when INI text area changes (debounced)
+            const outputEl = document.getElementById('output');
+            if (outputEl) {
+                let parseTimer = null;
+                outputEl.addEventListener('input', () => {
+                    if (suppressOutputListener) return;
+                    if (parseTimer) clearTimeout(parseTimer);
+                    parseTimer = setTimeout(() => {
+                        try {
+                            isApplyingFromOutput = true;
+                            parseINI(outputEl.value);
+                        } catch (e) {
+                            // ignore parse errors while typing
+                        } finally {
+                            isApplyingFromOutput = false;
+                        }
+                    }, 400);
+                });
+            }
         });
     </script>
 </body>
