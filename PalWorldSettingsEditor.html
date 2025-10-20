@@ -107,7 +107,7 @@
             margin-bottom: 30px;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .section-header {
@@ -143,6 +143,7 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             background: white;
+            overflow: visible;
         }
 
         .section-content.collapsed {
@@ -152,6 +153,8 @@
         .form-group {
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow: visible;
         }
 
         .form-group label {
@@ -181,12 +184,27 @@
             padding: 8px 12px;
             border-radius: 4px;
             white-space: nowrap;
-            z-index: 1000;
+            z-index: 10000;
             font-size: 12px;
             font-weight: normal;
             max-width: 300px;
             white-space: normal;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        .tooltip:hover::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 18px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 7px solid #2d3748;
+            z-index: 10001;
+            pointer-events: none;
         }
 
         input[type="text"],
