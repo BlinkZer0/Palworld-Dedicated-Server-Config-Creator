@@ -302,13 +302,350 @@
                 justify-content: center;
             }
         }
+
+        /* Enhanced UI Styles */
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            margin-right: 12px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .section-header-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .value-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .value-normal { background: #48bb78; }
+        .value-high { background: #f6ad55; }
+        .value-extreme { background: #fc8181; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 10px 30px;
+            background: #edf2f7;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .btn-preset {
+            padding: 8px 16px;
+            border: 2px solid;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+        }
+
+        .btn-preset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-preset.casual {
+            border-color: #48bb78;
+            color: #22543d;
+        }
+
+        .btn-preset.normal {
+            border-color: #4299e1;
+            color: #2c5282;
+        }
+
+        .btn-preset.hardcore {
+            border-color: #f56565;
+            color: #742a2a;
+        }
+
+        .preset-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .input-with-indicator input[type="number"] {
+            padding-right: 35px;
+        }
+
+        .range-badge {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 3px;
+            pointer-events: none;
+        }
+
+        .range-low {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .range-normal {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .range-high {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .success-message, .error-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Color-coded section borders */
+        .section.server-info { border-left: 4px solid #5a67d8; }
+        .section.multiplayer { border-left: 4px solid #48bb78; }
+        .section.gameplay { border-left: 4px solid #ed8936; }
+        .section.randomizer { border-left: 4px solid #9f7aea; }
+        .section.player { border-left: 4px solid #4299e1; }
+        .section.pal { border-left: 4px solid #f6ad55; }
+        .section.building { border-left: 4px solid #fc8181; }
+        .section.resources { border-left: 4px solid #38b2ac; }
+        .section.guild { border-left: 4px solid #d69e2e; }
+        .section.enemy { border-left: 4px solid #e53e3e; }
+        .section.management { border-left: 4px solid #667eea; }
+        .section.rcon { border-left: 4px solid #805ad5; }
     </style>
+
+    <!-- SVG Icon Definitions -->
+    <svg style="display: none;">
+        <defs>
+            <!-- Server Icon -->
+            <symbol id="icon-server" viewBox="0 0 24 24">
+                <rect x="2" y="4" width="20" height="6" rx="2" fill="currentColor" opacity="0.3"/>
+                <rect x="2" y="12" width="20" height="6" rx="2" fill="currentColor" opacity="0.5"/>
+                <rect x="2" y="20" width="20" height="2" rx="1" fill="currentColor" opacity="0.7"/>
+                <circle cx="6" cy="7" r="1" fill="#48bb78">
+                    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="10" cy="7" r="1" fill="#48bb78">
+                    <animate attributeName="opacity" values="1;0.3;1" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="6" cy="15" r="1" fill="#48bb78">
+                    <animate attributeName="opacity" values="1;0.3;1" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+                </circle>
+            </symbol>
+
+            <!-- Multiplayer Icon -->
+            <symbol id="icon-multiplayer" viewBox="0 0 24 24">
+                <circle cx="9" cy="7" r="3" fill="currentColor" opacity="0.5"/>
+                <circle cx="15" cy="7" r="3" fill="currentColor" opacity="0.7"/>
+                <path d="M9 11c-2.5 0-7 1.3-7 4v2h14v-2c0-2.7-4.5-4-7-4z" fill="currentColor" opacity="0.5"/>
+                <path d="M15 11c-2.5 0-7 1.3-7 4v2h14v-2c0-2.7-4.5-4-7-4z" fill="currentColor" opacity="0.7"/>
+            </symbol>
+
+            <!-- Gameplay Icon -->
+            <symbol id="icon-gameplay" viewBox="0 0 24 24">
+                <path d="M6 9h6v2H6V9zm4 4H6v2h4v-2zm8-4v2h-2V9h-2v2h2v2h2v-2h2V9h-2z" fill="currentColor" opacity="0.7"/>
+                <path d="M18 5H6C3.8 5 2 6.8 2 9v6c0 2.2 1.8 4 4 4h12c2.2 0 4-1.8 4-4V9c0-2.2-1.8-4-4-4z" stroke="currentColor" fill="none" stroke-width="2"/>
+                <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="5 12 12" dur="0.5s" repeatCount="indefinite"/>
+            </symbol>
+
+            <!-- Randomizer Icon -->
+            <symbol id="icon-randomizer" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="6" height="6" rx="1" fill="currentColor" opacity="0.5">
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+                </rect>
+                <rect x="3" y="13" width="6" height="6" rx="1" fill="currentColor" opacity="0.7">
+                    <animate attributeName="opacity" values="0.7;0.3;0.7" dur="1.5s" begin="0.3s" repeatCount="indefinite"/>
+                </rect>
+                <rect x="15" y="3" width="6" height="6" rx="1" fill="currentColor" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="1.5s" begin="0.6s" repeatCount="indefinite"/>
+                </rect>
+                <rect x="15" y="13" width="6" height="6" rx="1" fill="currentColor" opacity="0.8">
+                    <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.5s" begin="0.9s" repeatCount="indefinite"/>
+                </rect>
+            </symbol>
+
+            <!-- Player Icon -->
+            <symbol id="icon-player" viewBox="0 0 24 24">
+                <circle cx="12" cy="7" r="4" fill="currentColor" opacity="0.6"/>
+                <path d="M12 12c-4 0-8 2-8 5v3h16v-3c0-3-4-5-8-5z" fill="currentColor" opacity="0.7"/>
+            </symbol>
+
+            <!-- Pal Icon -->
+            <symbol id="icon-pal" viewBox="0 0 24 24">
+                <circle cx="9" cy="9" r="2" fill="currentColor" opacity="0.7"/>
+                <circle cx="15" cy="9" r="2" fill="currentColor" opacity="0.7"/>
+                <path d="M12 4c-4 0-7 3-7 7v5c0 3 3 5 7 5s7-2 7-5v-5c0-4-3-7-7-7z" fill="currentColor" opacity="0.5"/>
+                <path d="M9 14c0 1.5 1.3 3 3 3s3-1.5 3-3" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
+                <animateTransform attributeName="transform" type="translate" from="0 0" to="0 2" dur="1s" repeatCount="indefinite" direction="alternate"/>
+            </symbol>
+
+            <!-- Building Icon -->
+            <symbol id="icon-building" viewBox="0 0 24 24">
+                <path d="M12 3L4 9v12h16V9l-8-6z" fill="currentColor" opacity="0.5"/>
+                <rect x="9" y="13" width="2" height="4" fill="currentColor" opacity="0.8"/>
+                <rect x="13" y="13" width="2" height="4" fill="currentColor" opacity="0.8"/>
+                <rect x="9" y="9" width="2" height="2" fill="currentColor" opacity="0.6"/>
+                <rect x="13" y="9" width="2" height="2" fill="currentColor" opacity="0.6"/>
+            </symbol>
+
+            <!-- Resources Icon -->
+            <symbol id="icon-resources" viewBox="0 0 24 24">
+                <path d="M12 2L8 8h8l-4-6z" fill="currentColor" opacity="0.7">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+                </path>
+                <path d="M8 8l-4 6h8l-4-6z" fill="currentColor" opacity="0.5"/>
+                <path d="M16 8l-4 6h8l-4-6z" fill="currentColor" opacity="0.6"/>
+                <path d="M12 14l-4 6h8l-4-6z" fill="currentColor" opacity="0.8"/>
+            </symbol>
+
+            <!-- Guild Icon -->
+            <symbol id="icon-guild" viewBox="0 0 24 24">
+                <path d="M12 2L2 7v10c0 5 10 8 10 8s10-3 10-8V7L12 2z" fill="currentColor" opacity="0.5"/>
+                <path d="M12 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M8 10l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </symbol>
+
+            <!-- Enemy Icon -->
+            <symbol id="icon-enemy" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.3">
+                    <animate attributeName="r" values="10;11;10" dur="1s" repeatCount="indefinite"/>
+                </circle>
+                <path d="M8 10l2-2 2 2-2 2-2-2zm6 0l2-2 2 2-2 2-2-2z" fill="currentColor" opacity="0.7"/>
+                <path d="M8 15c1 2 3 3 4 3s3-1 4-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </symbol>
+
+            <!-- Management Icon -->
+            <symbol id="icon-management" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                <path d="M12 6v2m0 8v2m6-6h-2m-8 0H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="8" stroke="currentColor" fill="none" stroke-width="2">
+                    <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="20s" repeatCount="indefinite"/>
+                </circle>
+            </symbol>
+
+            <!-- RCON Icon -->
+            <symbol id="icon-rcon" viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11H3V9z" fill="currentColor" opacity="0.3"/>
+                <circle cx="8" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="12" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="16" cy="14" r="1.5" fill="currentColor"/>
+                <path d="M7 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </symbol>
+
+            <!-- Check Icon -->
+            <symbol id="icon-check" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" fill="#48bb78"/>
+                <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </symbol>
+
+            <!-- Error Icon -->
+            <symbol id="icon-error" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" fill="#f56565"/>
+                <path d="M15 9l-6 6m0-6l6 6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </symbol>
+
+            <!-- Loading Spinner -->
+            <symbol id="icon-spinner" viewBox="0 0 50 50">
+                <circle cx="25" cy="25" r="20" fill="none" stroke="#5a67d8" stroke-width="4" stroke-dasharray="31.4 31.4" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite"/>
+                </circle>
+            </symbol>
+
+            <!-- Preset Icons -->
+            <symbol id="icon-casual" viewBox="0 0 24 24">
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" fill="currentColor" opacity="0.3"/>
+                <circle cx="9" cy="10" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="10" r="1.5" fill="currentColor"/>
+                <path d="M8 15c1 2 3 2 4 2s3 0 4-2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </symbol>
+
+            <symbol id="icon-normal" viewBox="0 0 24 24">
+                <path d="M12 2L2 7v10c0 5 10 8 10 8s10-3 10-8V7L12 2z" fill="currentColor" opacity="0.4"/>
+                <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </symbol>
+
+            <symbol id="icon-hardcore" viewBox="0 0 24 24">
+                <path d="M12 2l3 7h7l-5.5 4 2 7-6.5-5-6.5 5 2-7L2 9h7l3-7z" fill="currentColor" opacity="0.5"/>
+                <circle cx="12" cy="12" r="3" fill="currentColor">
+                    <animate attributeName="r" values="3;3.5;3" dur="0.5s" repeatCount="indefinite"/>
+                </circle>
+            </symbol>
+        </defs>
+    </svg>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>⚙️ Palworld Server Settings Editor</h1>
             <p>Configure your dedicated server settings with ease</p>
+        </div>
+
+        <div class="preset-buttons">
+            <button class="btn-preset casual" onclick="applyPreset('casual')">
+                <svg class="preset-icon"><use href="#icon-casual"/></svg>
+                Casual Mode
+            </button>
+            <button class="btn-preset normal" onclick="applyPreset('normal')">
+                <svg class="preset-icon"><use href="#icon-normal"/></svg>
+                Normal Mode
+            </button>
+            <button class="btn-preset hardcore" onclick="applyPreset('hardcore')">
+                <svg class="preset-icon"><use href="#icon-hardcore"/></svg>
+                Hardcore Mode
+            </button>
         </div>
 
         <div class="controls">
@@ -323,15 +660,28 @@
             <button class="btn btn-danger" onclick="resetToDefaults()">🔄 Reset to Defaults</button>
         </div>
 
-        <div id="successMessage" class="success-message"></div>
-        <div id="errorMessage" class="error-message"></div>
+        <svg class="loading-spinner" id="loadingSpinner">
+            <use href="#icon-spinner"/>
+        </svg>
+
+        <div id="successMessage" class="success-message">
+            <svg class="message-icon"><use href="#icon-check"/></svg>
+            <span></span>
+        </div>
+        <div id="errorMessage" class="error-message">
+            <svg class="message-icon"><use href="#icon-error"/></svg>
+            <span></span>
+        </div>
 
         <div class="content">
             <form id="settingsForm">
                 <!-- Server Information Section -->
-                <div class="section">
+                <div class="section server-info">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Server Information
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-server"/></svg>
+                            Server Information
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -378,9 +728,12 @@
                 </div>
 
                 <!-- Multiplayer Settings Section -->
-                <div class="section">
+                <div class="section multiplayer">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Multiplayer Settings
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-multiplayer"/></svg>
+                            Multiplayer Settings
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -456,9 +809,12 @@
                 </div>
 
                 <!-- Gameplay Settings Section -->
-                <div class="section">
+                <div class="section gameplay">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Gameplay Settings
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-gameplay"/></svg>
+                            Gameplay Settings
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -540,9 +896,12 @@
                 </div>
 
                 <!-- Randomizer Settings Section -->
-                <div class="section">
+                <div class="section randomizer">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Randomizer Settings
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-randomizer"/></svg>
+                            Randomizer Settings
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -567,9 +926,12 @@
                 </div>
 
                 <!-- Player Settings Section -->
-                <div class="section">
+                <div class="section player">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Player Settings
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-player"/></svg>
+                            Player Settings
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -616,9 +978,12 @@
                 </div>
 
                 <!-- Pal Settings Section -->
-                <div class="section">
+                <div class="section pal">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Pal Settings
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-pal"/></svg>
+                            Pal Settings
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -675,9 +1040,12 @@
                 </div>
 
                 <!-- Base & Building Settings Section -->
-                <div class="section">
+                <div class="section building">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Base & Building Settings
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-building"/></svg>
+                            Base & Building Settings
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -728,9 +1096,12 @@
                 </div>
 
                 <!-- Drops & Resources Section -->
-                <div class="section">
+                <div class="section resources">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Drops & Resources
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-resources"/></svg>
+                            Drops & Resources
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -777,9 +1148,12 @@
                 </div>
 
                 <!-- Guild & Auto-Reset Settings Section -->
-                <div class="section">
+                <div class="section guild">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Guild & Auto-Reset Settings
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-guild"/></svg>
+                            Guild & Auto-Reset Settings
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -796,9 +1170,12 @@
                 </div>
 
                 <!-- Enemy & Invader Settings Section -->
-                <div class="section">
+                <div class="section enemy">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Enemy & Invader Settings
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-enemy"/></svg>
+                            Enemy & Invader Settings
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -817,9 +1194,12 @@
                 </div>
 
                 <!-- Server Management Section -->
-                <div class="section">
+                <div class="section management">
                     <div class="section-header" onclick="toggleSection(this)">
-                        Server Management
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-management"/></svg>
+                            Server Management
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -859,9 +1239,12 @@
                 </div>
 
                 <!-- RCON & REST API Section -->
-                <div class="section">
+                <div class="section rcon">
                     <div class="section-header" onclick="toggleSection(this)">
-                        RCON & REST API
+                        <div class="section-header-content">
+                            <svg class="section-icon"><use href="#icon-rcon"/></svg>
+                            RCON & REST API
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="form-group">
@@ -916,11 +1299,16 @@
             return platforms.join(',');
         }
 
+        // Helper function to format boolean values correctly for Palworld
+        function formatBoolean(value) {
+            return value ? 'True' : 'False';
+        }
+
         // Generate INI file content
         function generateINI() {
             const platforms = getCrossplayPlatforms();
 
-            const settings = `OptionSettings=(Difficulty=${document.getElementById('Difficulty').value},RandomizerType=${document.getElementById('RandomizerType').value},RandomizerSeed="${document.getElementById('RandomizerSeed').value}",bIsRandomizerPalLevelRandom=${document.getElementById('bIsRandomizerPalLevelRandom').checked},DayTimeSpeedRate=${document.getElementById('DayTimeSpeedRate').value},NightTimeSpeedRate=${document.getElementById('NightTimeSpeedRate').value},ExpRate=${document.getElementById('ExpRate').value},PalCaptureRate=${document.getElementById('PalCaptureRate').value},PalSpawnNumRate=${document.getElementById('PalSpawnNumRate').value},PalDamageRateAttack=${document.getElementById('PalDamageRateAttack').value},PalDamageRateDefense=${document.getElementById('PalDamageRateDefense').value},PlayerDamageRateAttack=${document.getElementById('PlayerDamageRateAttack').value},PlayerDamageRateDefense=${document.getElementById('PlayerDamageRateDefense').value},PlayerStomachDecreaceRate=${document.getElementById('PlayerStomachDecreaceRate').value},PlayerStaminaDecreaceRate=${document.getElementById('PlayerStaminaDecreaceRate').value},PlayerAutoHPRegeneRate=${document.getElementById('PlayerAutoHPRegeneRate').value},PlayerAutoHpRegeneRateInSleep=${document.getElementById('PlayerAutoHpRegeneRateInSleep').value},PalStomachDecreaceRate=${document.getElementById('PalStomachDecreaceRate').value},PalStaminaDecreaceRate=${document.getElementById('PalStaminaDecreaceRate').value},PalAutoHPRegeneRate=${document.getElementById('PalAutoHPRegeneRate').value},PalAutoHpRegeneRateInSleep=${document.getElementById('PalAutoHpRegeneRateInSleep').value},BuildObjectHpRate=${document.getElementById('BuildObjectHpRate').value},BuildObjectDamageRate=${document.getElementById('BuildObjectDamageRate').value},BuildObjectDeteriorationDamageRate=${document.getElementById('BuildObjectDeteriorationDamageRate').value},CollectionDropRate=${document.getElementById('CollectionDropRate').value},CollectionObjectHpRate=${document.getElementById('CollectionObjectHpRate').value},CollectionObjectRespawnSpeedRate=${document.getElementById('CollectionObjectRespawnSpeedRate').value},EnemyDropItemRate=${document.getElementById('EnemyDropItemRate').value},DeathPenalty=${document.getElementById('DeathPenalty').value},bEnablePlayerToPlayerDamage=${document.getElementById('bEnablePlayerToPlayerDamage').checked},bEnableFriendlyFire=${document.getElementById('bEnableFriendlyFire').checked},bEnableInvaderEnemy=${document.getElementById('bEnableInvaderEnemy').checked},bActiveUNKO=${document.getElementById('bActiveUNKO').checked},bEnableAimAssistPad=${document.getElementById('bEnableAimAssistPad').checked},bEnableAimAssistKeyboard=${document.getElementById('bEnableAimAssistKeyboard').checked},DropItemMaxNum=${document.getElementById('DropItemMaxNum').value},DropItemMaxNum_UNKO=${document.getElementById('DropItemMaxNum_UNKO').value},BaseCampMaxNum=${document.getElementById('BaseCampMaxNum').value},BaseCampWorkerMaxNum=${document.getElementById('BaseCampWorkerMaxNum').value},DropItemAliveMaxHours=${document.getElementById('DropItemAliveMaxHours').value},bAutoResetGuildNoOnlinePlayers=${document.getElementById('bAutoResetGuildNoOnlinePlayers').checked},AutoResetGuildTimeNoOnlinePlayers=${document.getElementById('AutoResetGuildTimeNoOnlinePlayers').value},GuildPlayerMaxNum=${document.getElementById('GuildPlayerMaxNum').value},BaseCampMaxNumInGuild=${document.getElementById('BaseCampMaxNumInGuild').value},PalEggDefaultHatchingTime=${document.getElementById('PalEggDefaultHatchingTime').value},WorkSpeedRate=${document.getElementById('WorkSpeedRate').value},AutoSaveSpan=${document.getElementById('AutoSaveSpan').value},bIsMultiplay=${document.getElementById('bIsMultiplay').checked},bIsPvP=${document.getElementById('bIsPvP').checked},bHardcore=${document.getElementById('bHardcore').checked},bPalLost=${document.getElementById('bPalLost').checked},bCharacterRecreateInHardcore=${document.getElementById('bCharacterRecreateInHardcore').checked},bCanPickupOtherGuildDeathPenaltyDrop=${document.getElementById('bCanPickupOtherGuildDeathPenaltyDrop').checked},bEnableNonLoginPenalty=${document.getElementById('bEnableNonLoginPenalty').checked},bEnableFastTravel=${document.getElementById('bEnableFastTravel').checked},bIsStartLocationSelectByMap=${document.getElementById('bIsStartLocationSelectByMap').checked},bExistPlayerAfterLogout=${document.getElementById('bExistPlayerAfterLogout').checked},bEnableDefenseOtherGuildPlayer=${document.getElementById('bEnableDefenseOtherGuildPlayer').checked},bInvisibleOtherGuildBaseCampAreaFX=${document.getElementById('bInvisibleOtherGuildBaseCampAreaFX').checked},bBuildAreaLimit=${document.getElementById('bBuildAreaLimit').checked},ItemWeightRate=${document.getElementById('ItemWeightRate').value},CoopPlayerMaxNum=${document.getElementById('CoopPlayerMaxNum').value},ServerPlayerMaxNum=${document.getElementById('ServerPlayerMaxNum').value},ServerName="${document.getElementById('ServerName').value}",ServerDescription="${document.getElementById('ServerDescription').value}",AdminPassword="${document.getElementById('AdminPassword').value}",ServerPassword="${document.getElementById('ServerPassword').value}",PublicPort=${document.getElementById('PublicPort').value},PublicIP="${document.getElementById('PublicIP').value}",RCONEnabled=${document.getElementById('RCONEnabled').checked},RCONPort=${document.getElementById('RCONPort').value},Region="${document.getElementById('Region').value}",bUseAuth=${document.getElementById('bUseAuth').checked},BanListURL="${document.getElementById('BanListURL').value}",RESTAPIEnabled=${document.getElementById('RESTAPIEnabled').checked},RESTAPIPort=${document.getElementById('RESTAPIPort').value},bShowPlayerList=${document.getElementById('bShowPlayerList').checked},ChatPostLimitPerMinute=${document.getElementById('ChatPostLimitPerMinute').value},CrossplayPlatforms=(${platforms}),bIsUseBackupSaveData=${document.getElementById('bIsUseBackupSaveData').checked},LogFormatType=${document.getElementById('LogFormatType').value},SupplyDropSpan=${document.getElementById('SupplyDropSpan').value},EnablePredatorBossPal=${document.getElementById('EnablePredatorBossPal').checked},MaxBuildingLimitNum=${document.getElementById('MaxBuildingLimitNum').value},ServerReplicatePawnCullDistance=${document.getElementById('ServerReplicatePawnCullDistance').value},bAllowGlobalPalboxExport=${document.getElementById('bAllowGlobalPalboxExport').checked},bAllowGlobalPalboxImport=${document.getElementById('bAllowGlobalPalboxImport').checked},EquipmentDurabilityDamageRate=${document.getElementById('EquipmentDurabilityDamageRate').value},ItemContainerForceMarkDirtyInterval=${document.getElementById('ItemContainerForceMarkDirtyInterval').value},ItemCorruptionMultiplier=${document.getElementById('ItemCorruptionMultiplier').value})`;
+            const settings = `OptionSettings=(Difficulty=${document.getElementById('Difficulty').value},RandomizerType=${document.getElementById('RandomizerType').value},RandomizerSeed="${document.getElementById('RandomizerSeed').value}",bIsRandomizerPalLevelRandom=${formatBoolean(document.getElementById('bIsRandomizerPalLevelRandom').checked)},DayTimeSpeedRate=${document.getElementById('DayTimeSpeedRate').value},NightTimeSpeedRate=${document.getElementById('NightTimeSpeedRate').value},ExpRate=${document.getElementById('ExpRate').value},PalCaptureRate=${document.getElementById('PalCaptureRate').value},PalSpawnNumRate=${document.getElementById('PalSpawnNumRate').value},PalDamageRateAttack=${document.getElementById('PalDamageRateAttack').value},PalDamageRateDefense=${document.getElementById('PalDamageRateDefense').value},PlayerDamageRateAttack=${document.getElementById('PlayerDamageRateAttack').value},PlayerDamageRateDefense=${document.getElementById('PlayerDamageRateDefense').value},PlayerStomachDecreaceRate=${document.getElementById('PlayerStomachDecreaceRate').value},PlayerStaminaDecreaceRate=${document.getElementById('PlayerStaminaDecreaceRate').value},PlayerAutoHPRegeneRate=${document.getElementById('PlayerAutoHPRegeneRate').value},PlayerAutoHpRegeneRateInSleep=${document.getElementById('PlayerAutoHpRegeneRateInSleep').value},PalStomachDecreaceRate=${document.getElementById('PalStomachDecreaceRate').value},PalStaminaDecreaceRate=${document.getElementById('PalStaminaDecreaceRate').value},PalAutoHPRegeneRate=${document.getElementById('PalAutoHPRegeneRate').value},PalAutoHpRegeneRateInSleep=${document.getElementById('PalAutoHpRegeneRateInSleep').value},BuildObjectHpRate=${document.getElementById('BuildObjectHpRate').value},BuildObjectDamageRate=${document.getElementById('BuildObjectDamageRate').value},BuildObjectDeteriorationDamageRate=${document.getElementById('BuildObjectDeteriorationDamageRate').value},CollectionDropRate=${document.getElementById('CollectionDropRate').value},CollectionObjectHpRate=${document.getElementById('CollectionObjectHpRate').value},CollectionObjectRespawnSpeedRate=${document.getElementById('CollectionObjectRespawnSpeedRate').value},EnemyDropItemRate=${document.getElementById('EnemyDropItemRate').value},DeathPenalty=${document.getElementById('DeathPenalty').value},bEnablePlayerToPlayerDamage=${formatBoolean(document.getElementById('bEnablePlayerToPlayerDamage').checked)},bEnableFriendlyFire=${formatBoolean(document.getElementById('bEnableFriendlyFire').checked)},bEnableInvaderEnemy=${formatBoolean(document.getElementById('bEnableInvaderEnemy').checked)},bActiveUNKO=${formatBoolean(document.getElementById('bActiveUNKO').checked)},bEnableAimAssistPad=${formatBoolean(document.getElementById('bEnableAimAssistPad').checked)},bEnableAimAssistKeyboard=${formatBoolean(document.getElementById('bEnableAimAssistKeyboard').checked)},DropItemMaxNum=${document.getElementById('DropItemMaxNum').value},DropItemMaxNum_UNKO=${document.getElementById('DropItemMaxNum_UNKO').value},BaseCampMaxNum=${document.getElementById('BaseCampMaxNum').value},BaseCampWorkerMaxNum=${document.getElementById('BaseCampWorkerMaxNum').value},DropItemAliveMaxHours=${document.getElementById('DropItemAliveMaxHours').value},bAutoResetGuildNoOnlinePlayers=${formatBoolean(document.getElementById('bAutoResetGuildNoOnlinePlayers').checked)},AutoResetGuildTimeNoOnlinePlayers=${document.getElementById('AutoResetGuildTimeNoOnlinePlayers').value},GuildPlayerMaxNum=${document.getElementById('GuildPlayerMaxNum').value},BaseCampMaxNumInGuild=${document.getElementById('BaseCampMaxNumInGuild').value},PalEggDefaultHatchingTime=${document.getElementById('PalEggDefaultHatchingTime').value},WorkSpeedRate=${document.getElementById('WorkSpeedRate').value},AutoSaveSpan=${document.getElementById('AutoSaveSpan').value},bIsMultiplay=${formatBoolean(document.getElementById('bIsMultiplay').checked)},bIsPvP=${formatBoolean(document.getElementById('bIsPvP').checked)},bHardcore=${formatBoolean(document.getElementById('bHardcore').checked)},bPalLost=${formatBoolean(document.getElementById('bPalLost').checked)},bCharacterRecreateInHardcore=${formatBoolean(document.getElementById('bCharacterRecreateInHardcore').checked)},bCanPickupOtherGuildDeathPenaltyDrop=${formatBoolean(document.getElementById('bCanPickupOtherGuildDeathPenaltyDrop').checked)},bEnableNonLoginPenalty=${formatBoolean(document.getElementById('bEnableNonLoginPenalty').checked)},bEnableFastTravel=${formatBoolean(document.getElementById('bEnableFastTravel').checked)},bIsStartLocationSelectByMap=${formatBoolean(document.getElementById('bIsStartLocationSelectByMap').checked)},bExistPlayerAfterLogout=${formatBoolean(document.getElementById('bExistPlayerAfterLogout').checked)},bEnableDefenseOtherGuildPlayer=${formatBoolean(document.getElementById('bEnableDefenseOtherGuildPlayer').checked)},bInvisibleOtherGuildBaseCampAreaFX=${formatBoolean(document.getElementById('bInvisibleOtherGuildBaseCampAreaFX').checked)},bBuildAreaLimit=${formatBoolean(document.getElementById('bBuildAreaLimit').checked)},ItemWeightRate=${document.getElementById('ItemWeightRate').value},CoopPlayerMaxNum=${document.getElementById('CoopPlayerMaxNum').value},ServerPlayerMaxNum=${document.getElementById('ServerPlayerMaxNum').value},ServerName="${document.getElementById('ServerName').value}",ServerDescription="${document.getElementById('ServerDescription').value}",AdminPassword="${document.getElementById('AdminPassword').value}",ServerPassword="${document.getElementById('ServerPassword').value}",PublicPort=${document.getElementById('PublicPort').value},PublicIP="${document.getElementById('PublicIP').value}",RCONEnabled=${formatBoolean(document.getElementById('RCONEnabled').checked)},RCONPort=${document.getElementById('RCONPort').value},Region="${document.getElementById('Region').value}",bUseAuth=${formatBoolean(document.getElementById('bUseAuth').checked)},BanListURL="${document.getElementById('BanListURL').value}",RESTAPIEnabled=${formatBoolean(document.getElementById('RESTAPIEnabled').checked)},RESTAPIPort=${document.getElementById('RESTAPIPort').value},bShowPlayerList=${formatBoolean(document.getElementById('bShowPlayerList').checked)},ChatPostLimitPerMinute=${document.getElementById('ChatPostLimitPerMinute').value},CrossplayPlatforms=(${platforms}),bIsUseBackupSaveData=${formatBoolean(document.getElementById('bIsUseBackupSaveData').checked)},LogFormatType=${document.getElementById('LogFormatType').value},SupplyDropSpan=${document.getElementById('SupplyDropSpan').value},EnablePredatorBossPal=${formatBoolean(document.getElementById('EnablePredatorBossPal').checked)},MaxBuildingLimitNum=${document.getElementById('MaxBuildingLimitNum').value},ServerReplicatePawnCullDistance=${document.getElementById('ServerReplicatePawnCullDistance').value},bAllowGlobalPalboxExport=${formatBoolean(document.getElementById('bAllowGlobalPalboxExport').checked)},bAllowGlobalPalboxImport=${formatBoolean(document.getElementById('bAllowGlobalPalboxImport').checked)},EquipmentDurabilityDamageRate=${document.getElementById('EquipmentDurabilityDamageRate').value},ItemContainerForceMarkDirtyInterval=${document.getElementById('ItemContainerForceMarkDirtyInterval').value},ItemCorruptionMultiplier=${document.getElementById('ItemCorruptionMultiplier').value})`;
 
             const output = `[/Script/Pal.PalGameWorldSettings]\n${settings}`;
             document.getElementById('output').value = output;
@@ -928,23 +1316,33 @@
             showMessage('successMessage', 'INI file content generated successfully!');
         }
 
-        // Copy to clipboard
-        function copyToClipboard() {
+        // Copy to clipboard (modern API with fallback)
+        async function copyToClipboard() {
             const output = document.getElementById('output');
             if (!output.value) {
                 showMessage('errorMessage', 'Please generate INI output first!');
                 return;
             }
 
-            output.select();
-            document.execCommand('copy');
+            try {
+                // Try modern clipboard API first
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(output.value);
+                } else {
+                    // Fallback to older method
+                    output.select();
+                    document.execCommand('copy');
+                }
 
-            const copyMsg = document.getElementById('copySuccess');
-            copyMsg.textContent = 'Copied to clipboard! ✓';
-            copyMsg.style.display = 'block';
-            setTimeout(() => {
-                copyMsg.style.display = 'none';
-            }, 3000);
+                const copyMsg = document.getElementById('copySuccess');
+                copyMsg.textContent = 'Copied to clipboard! ✓';
+                copyMsg.style.display = 'block';
+                setTimeout(() => {
+                    copyMsg.style.display = 'none';
+                }, 3000);
+            } catch (err) {
+                showMessage('errorMessage', 'Failed to copy to clipboard. Please copy manually.');
+            }
         }
 
         // Load settings from INI file
@@ -1065,14 +1463,89 @@
             showMessage('successMessage', 'All settings reset to defaults!');
         }
 
-        // Show message helper
+        // Show message helper (enhanced with icons)
         function showMessage(elementId, message) {
             const msgElement = document.getElementById(elementId);
-            msgElement.textContent = message;
-            msgElement.style.display = 'block';
+            const span = msgElement.querySelector('span');
+            if (span) {
+                span.textContent = message;
+            } else {
+                msgElement.textContent = message;
+            }
+            msgElement.style.display = 'flex';
             setTimeout(() => {
                 msgElement.style.display = 'none';
             }, 5000);
+        }
+
+        // Apply preset configurations
+        function applyPreset(preset) {
+            if (!confirm(`Apply ${preset.charAt(0).toUpperCase() + preset.slice(1)} Mode preset? This will override your current settings.`)) {
+                return;
+            }
+
+            // Reset to defaults first
+            document.getElementById('settingsForm').reset();
+
+            // Apply preset-specific values
+            if (preset === 'casual') {
+                // Easier gameplay
+                document.getElementById('ExpRate').value = '2.000000';
+                document.getElementById('PalCaptureRate').value = '2.000000';
+                document.getElementById('PlayerDamageRateAttack').value = '1.5';
+                document.getElementById('PlayerDamageRateDefense').value = '0.7';
+                document.getElementById('PalDamageRateAttack').value = '1.3';
+                document.getElementById('EnemyDropItemRate').value = '2.0';
+                document.getElementById('CollectionDropRate').value = '2.0';
+                document.getElementById('WorkSpeedRate').value = '2.0';
+                document.getElementById('DeathPenalty').value = 'Item';
+                document.getElementById('bEnableFastTravel').checked = true;
+                document.getElementById('PalEggDefaultHatchingTime').value = '36.000000';
+                showMessage('successMessage', 'Casual Mode preset applied! Easier gameplay with faster progression.');
+            } else if (preset === 'normal') {
+                // Default balanced gameplay
+                document.getElementById('ExpRate').value = '1.000000';
+                document.getElementById('PalCaptureRate').value = '1.000000';
+                document.getElementById('PlayerDamageRateAttack').value = '1.000000';
+                document.getElementById('PlayerDamageRateDefense').value = '1.000000';
+                document.getElementById('PalDamageRateAttack').value = '1.000000';
+                document.getElementById('EnemyDropItemRate').value = '1.000000';
+                document.getElementById('CollectionDropRate').value = '1.000000';
+                document.getElementById('WorkSpeedRate').value = '1.000000';
+                document.getElementById('DeathPenalty').value = 'All';
+                document.getElementById('bEnableFastTravel').checked = true;
+                document.getElementById('PalEggDefaultHatchingTime').value = '72.000000';
+                showMessage('successMessage', 'Normal Mode preset applied! Balanced default settings.');
+            } else if (preset === 'hardcore') {
+                // Harder gameplay
+                document.getElementById('ExpRate').value = '0.5';
+                document.getElementById('PalCaptureRate').value = '0.5';
+                document.getElementById('PlayerDamageRateAttack').value = '0.8';
+                document.getElementById('PlayerDamageRateDefense').value = '1.5';
+                document.getElementById('PalDamageRateAttack').value = '0.7';
+                document.getElementById('EnemyDropItemRate').value = '0.5';
+                document.getElementById('CollectionDropRate').value = '0.7';
+                document.getElementById('WorkSpeedRate').value = '0.5';
+                document.getElementById('DeathPenalty').value = 'All';
+                document.getElementById('bHardcore').checked = true;
+                document.getElementById('bPalLost').checked = true;
+                document.getElementById('bEnableFastTravel').checked = false;
+                document.getElementById('PalEggDefaultHatchingTime').value = '120.000000';
+                document.getElementById('PlayerStomachDecreaceRate').value = '2.000000';
+                document.getElementById('PlayerStaminaDecreaceRate').value = '1.5';
+                showMessage('successMessage', 'Hardcore Mode preset applied! Challenging survival experience.');
+            }
+
+            // Set common default checkboxes
+            document.getElementById('bUseAuth').checked = true;
+            document.getElementById('bEnableInvaderEnemy').checked = true;
+            document.getElementById('bEnableAimAssistPad').checked = true;
+            document.getElementById('bIsStartLocationSelectByMap').checked = true;
+            document.getElementById('bEnableNonLoginPenalty').checked = true;
+            document.getElementById('bIsUseBackupSaveData').checked = true;
+            document.getElementById('bAllowGlobalPalboxExport').checked = true;
+            document.getElementById('EnablePredatorBossPal').checked = true;
+            document.querySelectorAll('[id^="platform_"]').forEach(cb => cb.checked = true);
         }
 
         // Initialize - set default values
