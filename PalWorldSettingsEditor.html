@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palworld Server Settings Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #5a67d8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4c51bf;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(90, 103, 216, 0.4);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #edf2f7;
+            padding: 15px 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2d3748;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .section-header:hover {
+            background: #e2e8f0;
+        }
+
+        .section-header::after {
+            content: '▼';
+            transition: transform 0.3s ease;
+        }
+
+        .section-header.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            background: white;
+        }
+
+        .section-content.collapsed {
+            display: none;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: #5a67d8;
+            font-size: 0.9em;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            left: 0;
+            top: 25px;
+            background: #2d3748;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1000;
+            font-size: 12px;
+            font-weight: normal;
+            max-width: 300px;
+            white-space: normal;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        select,
+        textarea {
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="password"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #5a67d8;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .output-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .output-section h3 {
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        textarea#output {
+            width: 100%;
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .multi-select-wrapper {
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .multi-select-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+        }
+
+        .success-message {
+            padding: 12px;
+            background: #c6f6d5;
+            color: #22543d;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-message {
+            padding: 12px;
+            background: #fed7d7;
+            color: #742a2a;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .section-content {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Palworld Server Settings Editor</h1>
+            <p>Configure your dedicated server settings with ease</p>
+        </div>
+
+        <div class="controls">
+            <div class="file-input-wrapper">
+                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                    📂 Load from INI File
+                </button>
+                <input type="file" id="fileInput" accept=".ini" onchange="loadFromFile(event)">
+            </div>
+            <button class="btn btn-secondary" onclick="generateINI()">✅ Generate INI Output</button>
+            <button class="btn btn-secondary" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+            <button class="btn btn-danger" onclick="resetToDefaults()">🔄 Reset to Defaults</button>
+        </div>
+
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="content">
+            <form id="settingsForm">
+                <!-- Server Information Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Server Information
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Server Name <span class="tooltip" data-tip="The name of your server as it appears in the server list">ℹ️</span></label>
+                            <input type="text" id="ServerName" value="Default Palworld Server">
+                        </div>
+                        <div class="form-group">
+                            <label>Server Description <span class="tooltip" data-tip="A description of your server">ℹ️</span></label>
+                            <input type="text" id="ServerDescription" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Server Password <span class="tooltip" data-tip="Password required to join the server (leave empty for no password)">ℹ️</span></label>
+                            <input type="password" id="ServerPassword" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Admin Password <span class="tooltip" data-tip="Password for server administration">ℹ️</span></label>
+                            <input type="password" id="AdminPassword" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Public IP <span class="tooltip" data-tip="Your server's public IP address">ℹ️</span></label>
+                            <input type="text" id="PublicIP" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Public Port <span class="tooltip" data-tip="Port for game connections (default: 8211)">ℹ️</span></label>
+                            <input type="number" id="PublicPort" value="8211" min="1024" max="65535">
+                        </div>
+                        <div class="form-group">
+                            <label>Region <span class="tooltip" data-tip="Server region identifier">ℹ️</span></label>
+                            <input type="text" id="Region" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bUseAuth">
+                                Use Authentication <span class="tooltip" data-tip="Enable Steam authentication">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bShowPlayerList">
+                                Show Player List <span class="tooltip" data-tip="Display player list publicly">ℹ️</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multiplayer Settings Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Multiplayer Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Max Players <span class="tooltip" data-tip="Maximum number of players (1-32)">ℹ️</span></label>
+                            <input type="number" id="ServerPlayerMaxNum" value="32" min="1" max="32">
+                        </div>
+                        <div class="form-group">
+                            <label>Co-op Players <span class="tooltip" data-tip="Maximum number of co-op players">ℹ️</span></label>
+                            <input type="number" id="CoopPlayerMaxNum" value="4" min="1" max="4">
+                        </div>
+                        <div class="form-group">
+                            <label>Guild Max Players <span class="tooltip" data-tip="Maximum players per guild (1-100)">ℹ️</span></label>
+                            <input type="number" id="GuildPlayerMaxNum" value="20" min="1" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bIsMultiplay">
+                                Multiplayer Enabled <span class="tooltip" data-tip="Enable multiplayer mode">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bIsPvP">
+                                PvP Enabled <span class="tooltip" data-tip="Enable player vs player combat">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bEnablePlayerToPlayerDamage">
+                                Player-to-Player Damage <span class="tooltip" data-tip="Allow players to damage each other">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bEnableFriendlyFire">
+                                Friendly Fire <span class="tooltip" data-tip="Enable damage to allies">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bEnableDefenseOtherGuildPlayer">
+                                Defense vs Other Guilds <span class="tooltip" data-tip="Enable defense against other guild players">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bCanPickupOtherGuildDeathPenaltyDrop">
+                                Pickup Other Guild Drops <span class="tooltip" data-tip="Allow picking up death penalty drops from other guilds">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Crossplay Platforms <span class="tooltip" data-tip="Select platforms to enable crossplay with">ℹ️</span></label>
+                            <div class="multi-select-wrapper">
+                                <div class="multi-select-option">
+                                    <input type="checkbox" id="platform_Steam" value="Steam" checked>
+                                    <label for="platform_Steam">Steam</label>
+                                </div>
+                                <div class="multi-select-option">
+                                    <input type="checkbox" id="platform_Xbox" value="Xbox" checked>
+                                    <label for="platform_Xbox">Xbox</label>
+                                </div>
+                                <div class="multi-select-option">
+                                    <input type="checkbox" id="platform_PS5" value="PS5" checked>
+                                    <label for="platform_PS5">PS5</label>
+                                </div>
+                                <div class="multi-select-option">
+                                    <input type="checkbox" id="platform_Mac" value="Mac" checked>
+                                    <label for="platform_Mac">Mac</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gameplay Settings Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Gameplay Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Difficulty <span class="tooltip" data-tip="Game difficulty level">ℹ️</span></label>
+                            <select id="Difficulty">
+                                <option value="None">None</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Difficult">Difficult</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Death Penalty <span class="tooltip" data-tip="What you lose on death">ℹ️</span></label>
+                            <select id="DeathPenalty">
+                                <option value="None">None</option>
+                                <option value="Item">Items Only</option>
+                                <option value="ItemAndEquipment">Items & Equipment</option>
+                                <option value="All" selected>All</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Experience Rate <span class="tooltip" data-tip="XP gain multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="ExpRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Pal Capture Rate <span class="tooltip" data-tip="Capture chance multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PalCaptureRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Day Speed Rate <span class="tooltip" data-tip="Daytime speed multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="DayTimeSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Night Speed Rate <span class="tooltip" data-tip="Nighttime speed multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="NightTimeSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bHardcore">
+                                Hardcore Mode <span class="tooltip" data-tip="Permanent death mode">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bPalLost">
+                                Pal Lost on Death <span class="tooltip" data-tip="Pals are permanently lost on death">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bCharacterRecreateInHardcore">
+                                Character Recreate in Hardcore <span class="tooltip" data-tip="Allow character recreation in hardcore mode">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bEnableFastTravel" checked>
+                                Fast Travel Enabled <span class="tooltip" data-tip="Allow fast travel">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bIsStartLocationSelectByMap" checked>
+                                Select Start Location <span class="tooltip" data-tip="Allow starting location selection on map">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bEnableAimAssistPad" checked>
+                                Aim Assist (Gamepad) <span class="tooltip" data-tip="Enable aim assist for gamepad users">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bEnableAimAssistKeyboard">
+                                Aim Assist (Keyboard) <span class="tooltip" data-tip="Enable aim assist for keyboard users">ℹ️</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Randomizer Settings Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Randomizer Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Randomizer Type <span class="tooltip" data-tip="Type of randomization">ℹ️</span></label>
+                            <select id="RandomizerType">
+                                <option value="None" selected>None</option>
+                                <option value="Region">Region</option>
+                                <option value="All">All</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Randomizer Seed <span class="tooltip" data-tip="Seed for randomization (leave empty for random)">ℹ️</span></label>
+                            <input type="text" id="RandomizerSeed" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bIsRandomizerPalLevelRandom">
+                                Randomize Pal Levels <span class="tooltip" data-tip="Randomize Pal levels">ℹ️</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Player Settings Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Player Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Player Attack Damage <span class="tooltip" data-tip="Player attack damage multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PlayerDamageRateAttack" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Player Defense <span class="tooltip" data-tip="Player defense multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PlayerDamageRateDefense" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Hunger Decrease Rate <span class="tooltip" data-tip="Player hunger decrease rate (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PlayerStomachDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Stamina Decrease Rate <span class="tooltip" data-tip="Player stamina decrease rate (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PlayerStaminaDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>HP Regen Rate <span class="tooltip" data-tip="Player HP regeneration rate (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PlayerAutoHPRegeneRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>HP Regen (Sleep) <span class="tooltip" data-tip="Player HP regen while sleeping (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PlayerAutoHpRegeneRateInSleep" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Item Weight Rate <span class="tooltip" data-tip="Item weight multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="ItemWeightRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bExistPlayerAfterLogout">
+                                Player Exists After Logout <span class="tooltip" data-tip="Player character remains in world after logout">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bEnableNonLoginPenalty" checked>
+                                Non-Login Penalty <span class="tooltip" data-tip="Enable penalties for not logging in">ℹ️</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pal Settings Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Pal Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Pal Spawn Rate <span class="tooltip" data-tip="Pal spawn rate multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PalSpawnNumRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Pal Attack Damage <span class="tooltip" data-tip="Pal attack damage multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PalDamageRateAttack" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Pal Defense <span class="tooltip" data-tip="Pal defense multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PalDamageRateDefense" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Pal Hunger Decrease <span class="tooltip" data-tip="Pal hunger decrease rate (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PalStomachDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Pal Stamina Decrease <span class="tooltip" data-tip="Pal stamina decrease rate (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PalStaminaDecreaceRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Pal HP Regen <span class="tooltip" data-tip="Pal HP regeneration rate (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PalAutoHPRegeneRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Pal HP Regen (Sleep) <span class="tooltip" data-tip="Pal HP regen while sleeping (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="PalAutoHpRegeneRateInSleep" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Pal Egg Hatch Time (hours) <span class="tooltip" data-tip="Time in hours for Pal eggs to hatch (0-240)">ℹ️</span></label>
+                            <input type="number" id="PalEggDefaultHatchingTime" value="72.000000" step="1" min="0" max="240">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bAllowGlobalPalboxExport" checked>
+                                Allow Global Palbox Export <span class="tooltip" data-tip="Allow exporting Pals from global Palbox">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bAllowGlobalPalboxImport">
+                                Allow Global Palbox Import <span class="tooltip" data-tip="Allow importing Pals to global Palbox">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="EnablePredatorBossPal" checked>
+                                Enable Predator Boss Pals <span class="tooltip" data-tip="Enable predator boss Pals">ℹ️</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Base & Building Settings Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Base & Building Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Max Base Camps <span class="tooltip" data-tip="Maximum number of base camps (1-128)">ℹ️</span></label>
+                            <input type="number" id="BaseCampMaxNum" value="128" min="1" max="128">
+                        </div>
+                        <div class="form-group">
+                            <label>Max Workers per Base <span class="tooltip" data-tip="Maximum workers per base (1-50)">ℹ️</span></label>
+                            <input type="number" id="BaseCampWorkerMaxNum" value="15" min="1" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Max Bases in Guild <span class="tooltip" data-tip="Maximum base camps per guild (1-10)">ℹ️</span></label>
+                            <input type="number" id="BaseCampMaxNumInGuild" value="4" min="1" max="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Building HP Rate <span class="tooltip" data-tip="Building HP multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="BuildObjectHpRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Building Damage Rate <span class="tooltip" data-tip="Damage to buildings multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="BuildObjectDamageRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Building Deterioration <span class="tooltip" data-tip="Building deterioration rate (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="BuildObjectDeteriorationDamageRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Work Speed Rate <span class="tooltip" data-tip="Work speed multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="WorkSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Max Building Limit <span class="tooltip" data-tip="Maximum building limit (0 = unlimited)">ℹ️</span></label>
+                            <input type="number" id="MaxBuildingLimitNum" value="0" min="0" max="100000">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bBuildAreaLimit">
+                                Build Area Limit <span class="tooltip" data-tip="Restrict building near certain structures">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bInvisibleOtherGuildBaseCampAreaFX">
+                                Hide Other Guild Base FX <span class="tooltip" data-tip="Hide visual effects of other guild bases">ℹ️</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drops & Resources Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Drops & Resources
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Collection Drop Rate <span class="tooltip" data-tip="Resource drop rate multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="CollectionDropRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Collection Object HP <span class="tooltip" data-tip="Harvestable object HP multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="CollectionObjectHpRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Resource Respawn Speed <span class="tooltip" data-tip="Resource respawn speed multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="CollectionObjectRespawnSpeedRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Enemy Drop Rate <span class="tooltip" data-tip="Enemy item drop rate multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="EnemyDropItemRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Max Dropped Items <span class="tooltip" data-tip="Maximum dropped items in world (100-10000)">ℹ️</span></label>
+                            <input type="number" id="DropItemMaxNum" value="3000" min="100" max="10000">
+                        </div>
+                        <div class="form-group">
+                            <label>Max Dropped Items (UNKO) <span class="tooltip" data-tip="Maximum special dropped items (10-1000)">ℹ️</span></label>
+                            <input type="number" id="DropItemMaxNum_UNKO" value="100" min="10" max="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>Drop Item Lifetime (hours) <span class="tooltip" data-tip="How long dropped items stay in world (0.1-24)">ℹ️</span></label>
+                            <input type="number" id="DropItemAliveMaxHours" value="1.000000" step="0.1" min="0.1" max="24.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Supply Drop Interval (minutes) <span class="tooltip" data-tip="Time between supply drops (10-600)">ℹ️</span></label>
+                            <input type="number" id="SupplyDropSpan" value="180" min="10" max="600">
+                        </div>
+                        <div class="form-group">
+                            <label>Equipment Durability Damage <span class="tooltip" data-tip="Equipment durability damage rate (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="EquipmentDurabilityDamageRate" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Item Corruption Multiplier <span class="tooltip" data-tip="Item corruption rate multiplier (0.1-10.0)">ℹ️</span></label>
+                            <input type="number" id="ItemCorruptionMultiplier" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guild & Auto-Reset Settings Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Guild & Auto-Reset Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bAutoResetGuildNoOnlinePlayers">
+                                Auto Reset Guild (No Online) <span class="tooltip" data-tip="Auto reset guild when no players online">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Auto Reset Time (hours) <span class="tooltip" data-tip="Hours until guild auto-resets (1-168)">ℹ️</span></label>
+                            <input type="number" id="AutoResetGuildTimeNoOnlinePlayers" value="72.000000" step="1" min="1" max="168">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enemy & Invader Settings Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Enemy & Invader Settings
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bEnableInvaderEnemy" checked>
+                                Enable Invader Enemies <span class="tooltip" data-tip="Enable enemy invasions">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bActiveUNKO">
+                                Active UNKO <span class="tooltip" data-tip="Enable special UNKO feature">ℹ️</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Server Management Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        Server Management
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Auto Save Interval (minutes) <span class="tooltip" data-tip="Time between auto-saves (5-60)">ℹ️</span></label>
+                            <input type="number" id="AutoSaveSpan" value="30.000000" step="1" min="5" max="60">
+                        </div>
+                        <div class="form-group">
+                            <label>Chat Post Limit/Min <span class="tooltip" data-tip="Maximum chat messages per minute (1-100)">ℹ️</span></label>
+                            <input type="number" id="ChatPostLimitPerMinute" value="30" min="1" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Ban List URL <span class="tooltip" data-tip="URL to ban list">ℹ️</span></label>
+                            <input type="text" id="BanListURL" value="https://api.palworldgame.com/api/banlist.txt">
+                        </div>
+                        <div class="form-group">
+                            <label>Log Format Type <span class="tooltip" data-tip="Server log format type">ℹ️</span></label>
+                            <select id="LogFormatType">
+                                <option value="Text" selected>Text</option>
+                                <option value="JSON">JSON</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bIsUseBackupSaveData" checked>
+                                Use Backup Save Data <span class="tooltip" data-tip="Enable automatic backup saves">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Item Container Dirty Interval <span class="tooltip" data-tip="Container update interval in seconds (0.1-10)">ℹ️</span></label>
+                            <input type="number" id="ItemContainerForceMarkDirtyInterval" value="1.000000" step="0.1" min="0.1" max="10.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Server Pawn Cull Distance <span class="tooltip" data-tip="Distance to cull pawns (1000-50000)">ℹ️</span></label>
+                            <input type="number" id="ServerReplicatePawnCullDistance" value="15000.000000" step="1000" min="1000" max="50000">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RCON & REST API Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        RCON & REST API
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="RCONEnabled">
+                                Enable RCON <span class="tooltip" data-tip="Enable Remote Console">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>RCON Port <span class="tooltip" data-tip="Port for RCON (1024-65535)">ℹ️</span></label>
+                            <input type="number" id="RCONPort" value="25575" min="1024" max="65535">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="RESTAPIEnabled">
+                                Enable REST API <span class="tooltip" data-tip="Enable REST API for server management">ℹ️</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>REST API Port <span class="tooltip" data-tip="Port for REST API (1024-65535)">ℹ️</span></label>
+                            <input type="number" id="RESTAPIPort" value="8212" min="1024" max="65535">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Output Section -->
+            <div class="output-section">
+                <h3>Generated PalWorldSettings.ini Content</h3>
+                <textarea id="output" readonly placeholder="Click 'Generate INI Output' to see the configuration file content here..."></textarea>
+                <div id="copySuccess" class="success-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle section expand/collapse
+        function toggleSection(header) {
+            header.classList.toggle('collapsed');
+            const content = header.nextElementSibling;
+            content.classList.toggle('collapsed');
+        }
+
+        // Get all crossplay platforms
+        function getCrossplayPlatforms() {
+            const platforms = [];
+            document.querySelectorAll('[id^="platform_"]').forEach(cb => {
+                if (cb.checked) {
+                    platforms.push(cb.value);
+                }
+            });
+            return platforms.join(',');
+        }
+
+        // Generate INI file content
+        function generateINI() {
+            const platforms = getCrossplayPlatforms();
+
+            const settings = `OptionSettings=(Difficulty=${document.getElementById('Difficulty').value},RandomizerType=${document.getElementById('RandomizerType').value},RandomizerSeed="${document.getElementById('RandomizerSeed').value}",bIsRandomizerPalLevelRandom=${document.getElementById('bIsRandomizerPalLevelRandom').checked},DayTimeSpeedRate=${document.getElementById('DayTimeSpeedRate').value},NightTimeSpeedRate=${document.getElementById('NightTimeSpeedRate').value},ExpRate=${document.getElementById('ExpRate').value},PalCaptureRate=${document.getElementById('PalCaptureRate').value},PalSpawnNumRate=${document.getElementById('PalSpawnNumRate').value},PalDamageRateAttack=${document.getElementById('PalDamageRateAttack').value},PalDamageRateDefense=${document.getElementById('PalDamageRateDefense').value},PlayerDamageRateAttack=${document.getElementById('PlayerDamageRateAttack').value},PlayerDamageRateDefense=${document.getElementById('PlayerDamageRateDefense').value},PlayerStomachDecreaceRate=${document.getElementById('PlayerStomachDecreaceRate').value},PlayerStaminaDecreaceRate=${document.getElementById('PlayerStaminaDecreaceRate').value},PlayerAutoHPRegeneRate=${document.getElementById('PlayerAutoHPRegeneRate').value},PlayerAutoHpRegeneRateInSleep=${document.getElementById('PlayerAutoHpRegeneRateInSleep').value},PalStomachDecreaceRate=${document.getElementById('PalStomachDecreaceRate').value},PalStaminaDecreaceRate=${document.getElementById('PalStaminaDecreaceRate').value},PalAutoHPRegeneRate=${document.getElementById('PalAutoHPRegeneRate').value},PalAutoHpRegeneRateInSleep=${document.getElementById('PalAutoHpRegeneRateInSleep').value},BuildObjectHpRate=${document.getElementById('BuildObjectHpRate').value},BuildObjectDamageRate=${document.getElementById('BuildObjectDamageRate').value},BuildObjectDeteriorationDamageRate=${document.getElementById('BuildObjectDeteriorationDamageRate').value},CollectionDropRate=${document.getElementById('CollectionDropRate').value},CollectionObjectHpRate=${document.getElementById('CollectionObjectHpRate').value},CollectionObjectRespawnSpeedRate=${document.getElementById('CollectionObjectRespawnSpeedRate').value},EnemyDropItemRate=${document.getElementById('EnemyDropItemRate').value},DeathPenalty=${document.getElementById('DeathPenalty').value},bEnablePlayerToPlayerDamage=${document.getElementById('bEnablePlayerToPlayerDamage').checked},bEnableFriendlyFire=${document.getElementById('bEnableFriendlyFire').checked},bEnableInvaderEnemy=${document.getElementById('bEnableInvaderEnemy').checked},bActiveUNKO=${document.getElementById('bActiveUNKO').checked},bEnableAimAssistPad=${document.getElementById('bEnableAimAssistPad').checked},bEnableAimAssistKeyboard=${document.getElementById('bEnableAimAssistKeyboard').checked},DropItemMaxNum=${document.getElementById('DropItemMaxNum').value},DropItemMaxNum_UNKO=${document.getElementById('DropItemMaxNum_UNKO').value},BaseCampMaxNum=${document.getElementById('BaseCampMaxNum').value},BaseCampWorkerMaxNum=${document.getElementById('BaseCampWorkerMaxNum').value},DropItemAliveMaxHours=${document.getElementById('DropItemAliveMaxHours').value},bAutoResetGuildNoOnlinePlayers=${document.getElementById('bAutoResetGuildNoOnlinePlayers').checked},AutoResetGuildTimeNoOnlinePlayers=${document.getElementById('AutoResetGuildTimeNoOnlinePlayers').value},GuildPlayerMaxNum=${document.getElementById('GuildPlayerMaxNum').value},BaseCampMaxNumInGuild=${document.getElementById('BaseCampMaxNumInGuild').value},PalEggDefaultHatchingTime=${document.getElementById('PalEggDefaultHatchingTime').value},WorkSpeedRate=${document.getElementById('WorkSpeedRate').value},AutoSaveSpan=${document.getElementById('AutoSaveSpan').value},bIsMultiplay=${document.getElementById('bIsMultiplay').checked},bIsPvP=${document.getElementById('bIsPvP').checked},bHardcore=${document.getElementById('bHardcore').checked},bPalLost=${document.getElementById('bPalLost').checked},bCharacterRecreateInHardcore=${document.getElementById('bCharacterRecreateInHardcore').checked},bCanPickupOtherGuildDeathPenaltyDrop=${document.getElementById('bCanPickupOtherGuildDeathPenaltyDrop').checked},bEnableNonLoginPenalty=${document.getElementById('bEnableNonLoginPenalty').checked},bEnableFastTravel=${document.getElementById('bEnableFastTravel').checked},bIsStartLocationSelectByMap=${document.getElementById('bIsStartLocationSelectByMap').checked},bExistPlayerAfterLogout=${document.getElementById('bExistPlayerAfterLogout').checked},bEnableDefenseOtherGuildPlayer=${document.getElementById('bEnableDefenseOtherGuildPlayer').checked},bInvisibleOtherGuildBaseCampAreaFX=${document.getElementById('bInvisibleOtherGuildBaseCampAreaFX').checked},bBuildAreaLimit=${document.getElementById('bBuildAreaLimit').checked},ItemWeightRate=${document.getElementById('ItemWeightRate').value},CoopPlayerMaxNum=${document.getElementById('CoopPlayerMaxNum').value},ServerPlayerMaxNum=${document.getElementById('ServerPlayerMaxNum').value},ServerName="${document.getElementById('ServerName').value}",ServerDescription="${document.getElementById('ServerDescription').value}",AdminPassword="${document.getElementById('AdminPassword').value}",ServerPassword="${document.getElementById('ServerPassword').value}",PublicPort=${document.getElementById('PublicPort').value},PublicIP="${document.getElementById('PublicIP').value}",RCONEnabled=${document.getElementById('RCONEnabled').checked},RCONPort=${document.getElementById('RCONPort').value},Region="${document.getElementById('Region').value}",bUseAuth=${document.getElementById('bUseAuth').checked},BanListURL="${document.getElementById('BanListURL').value}",RESTAPIEnabled=${document.getElementById('RESTAPIEnabled').checked},RESTAPIPort=${document.getElementById('RESTAPIPort').value},bShowPlayerList=${document.getElementById('bShowPlayerList').checked},ChatPostLimitPerMinute=${document.getElementById('ChatPostLimitPerMinute').value},CrossplayPlatforms=(${platforms}),bIsUseBackupSaveData=${document.getElementById('bIsUseBackupSaveData').checked},LogFormatType=${document.getElementById('LogFormatType').value},SupplyDropSpan=${document.getElementById('SupplyDropSpan').value},EnablePredatorBossPal=${document.getElementById('EnablePredatorBossPal').checked},MaxBuildingLimitNum=${document.getElementById('MaxBuildingLimitNum').value},ServerReplicatePawnCullDistance=${document.getElementById('ServerReplicatePawnCullDistance').value},bAllowGlobalPalboxExport=${document.getElementById('bAllowGlobalPalboxExport').checked},bAllowGlobalPalboxImport=${document.getElementById('bAllowGlobalPalboxImport').checked},EquipmentDurabilityDamageRate=${document.getElementById('EquipmentDurabilityDamageRate').value},ItemContainerForceMarkDirtyInterval=${document.getElementById('ItemContainerForceMarkDirtyInterval').value},ItemCorruptionMultiplier=${document.getElementById('ItemCorruptionMultiplier').value})`;
+
+            const output = `[/Script/Pal.PalGameWorldSettings]\n${settings}`;
+            document.getElementById('output').value = output;
+
+            showMessage('successMessage', 'INI file content generated successfully!');
+        }
+
+        // Copy to clipboard
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            if (!output.value) {
+                showMessage('errorMessage', 'Please generate INI output first!');
+                return;
+            }
+
+            output.select();
+            document.execCommand('copy');
+
+            const copyMsg = document.getElementById('copySuccess');
+            copyMsg.textContent = 'Copied to clipboard! ✓';
+            copyMsg.style.display = 'block';
+            setTimeout(() => {
+                copyMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // Load settings from INI file
+        function loadFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    parseINI(content);
+                    showMessage('successMessage', 'Settings loaded from file successfully!');
+                } catch (error) {
+                    showMessage('errorMessage', 'Error parsing INI file: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Parse INI content and populate form
+        function parseINI(content) {
+            const match = content.match(/OptionSettings=\((.*)\)/s);
+            if (!match) {
+                throw new Error('Invalid INI format');
+            }
+
+            const settingsStr = match[1];
+            const settings = {};
+
+            // Parse key=value pairs, handling quoted values
+            let currentKey = '';
+            let currentValue = '';
+            let inQuotes = false;
+            let inParens = false;
+
+            for (let i = 0; i < settingsStr.length; i++) {
+                const char = settingsStr[i];
+
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                    currentValue += char;
+                } else if (char === '(' && !inQuotes) {
+                    inParens = true;
+                    currentValue += char;
+                } else if (char === ')' && !inQuotes) {
+                    inParens = false;
+                    currentValue += char;
+                } else if (char === '=' && !inQuotes && !currentKey) {
+                    currentKey = currentValue.trim();
+                    currentValue = '';
+                } else if (char === ',' && !inQuotes && !inParens) {
+                    if (currentKey) {
+                        settings[currentKey] = currentValue.trim();
+                    }
+                    currentKey = '';
+                    currentValue = '';
+                } else {
+                    currentValue += char;
+                }
+            }
+
+            // Add last setting
+            if (currentKey) {
+                settings[currentKey] = currentValue.trim();
+            }
+
+            // Populate form fields
+            Object.keys(settings).forEach(key => {
+                let value = settings[key];
+
+                // Remove quotes from string values
+                if (value.startsWith('"') && value.endsWith('"')) {
+                    value = value.slice(1, -1);
+                }
+
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = value === 'True' || value === 'true';
+                    } else {
+                        element.value = value;
+                    }
+                }
+            });
+
+            // Handle CrossplayPlatforms specially
+            if (settings.CrossplayPlatforms) {
+                const platforms = settings.CrossplayPlatforms.replace(/[()]/g, '').split(',');
+                document.querySelectorAll('[id^="platform_"]').forEach(cb => {
+                    cb.checked = platforms.includes(cb.value);
+                });
+            }
+        }
+
+        // Reset to defaults
+        function resetToDefaults() {
+            if (!confirm('Are you sure you want to reset all settings to default values?')) {
+                return;
+            }
+
+            document.getElementById('settingsForm').reset();
+
+            // Reset checkboxes to their default states
+            document.getElementById('bUseAuth').checked = true;
+            document.getElementById('bEnableInvaderEnemy').checked = true;
+            document.getElementById('bEnableAimAssistPad').checked = true;
+            document.getElementById('bEnableFastTravel').checked = true;
+            document.getElementById('bIsStartLocationSelectByMap').checked = true;
+            document.getElementById('bEnableNonLoginPenalty').checked = true;
+            document.getElementById('bIsUseBackupSaveData').checked = true;
+            document.getElementById('bAllowGlobalPalboxExport').checked = true;
+            document.getElementById('EnablePredatorBossPal').checked = true;
+
+            // Reset all platform checkboxes
+            document.querySelectorAll('[id^="platform_"]').forEach(cb => cb.checked = true);
+
+            showMessage('successMessage', 'All settings reset to defaults!');
+        }
+
+        // Show message helper
+        function showMessage(elementId, message) {
+            const msgElement = document.getElementById(elementId);
+            msgElement.textContent = message;
+            msgElement.style.display = 'block';
+            setTimeout(() => {
+                msgElement.style.display = 'none';
+            }, 5000);
+        }
+
+        // Initialize - set default values
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default checkboxes
+            document.getElementById('bUseAuth').checked = true;
+            document.getElementById('bEnableInvaderEnemy').checked = true;
+            document.getElementById('bEnableAimAssistPad').checked = true;
+            document.getElementById('bEnableFastTravel').checked = true;
+            document.getElementById('bIsStartLocationSelectByMap').checked = true;
+            document.getElementById('bEnableNonLoginPenalty').checked = true;
+            document.getElementById('bIsUseBackupSaveData').checked = true;
+            document.getElementById('bAllowGlobalPalboxExport').checked = true;
+            document.getElementById('EnablePredatorBossPal').checked = true;
+        });
+    </script>
+</body>
+</html>
