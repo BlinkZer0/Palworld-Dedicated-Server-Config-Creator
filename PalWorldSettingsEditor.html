@@ -1929,6 +1929,11 @@
             // Reset all platform checkboxes
             document.querySelectorAll('[id^="platform_"]').forEach(cb => cb.checked = true);
 
+            // Normalize number defaults to correct precision/limits
+            document.querySelectorAll('input[type="number"]').forEach(n => {
+                n.value = clampToInput(n, n.value);
+            });
+
             // Re-sync sliders to reflect default values
             initializeSliders();
 
@@ -2291,6 +2296,11 @@
 
             // Reset to defaults first
             document.getElementById('settingsForm').reset();
+
+            // Normalize all numbers after reset so defaults use proper formatting
+            document.querySelectorAll('input[type="number"]').forEach(n => {
+                n.value = clampToInput(n, n.value);
+            });
 
             // Apply preset-specific values
             if (preset === 'casual') {
