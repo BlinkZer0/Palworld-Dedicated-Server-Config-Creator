@@ -2,6 +2,12 @@
 
 A single-file HTML tool for creating and editing Palworld dedicated server configuration files (PalWorldSettings.ini). This tool simplifies the configuration process by providing an intuitive web interface for managing the hundreds of server parameters.
 
+## Preview
+
+[📄 **View Full Documentation PDF** - Palworld Server Settings Editor.pdf](Palworld%20Server%20Settings%20Editor.pdf)
+
+> **Note:** GitHub doesn't support embedded PDF iframes, but you can click the link above to view the full documentation demonstrating the tool's functionality.
+
 ## Features
 
 - **User-Friendly Interface**: Clean, organized sections for different configuration categories
