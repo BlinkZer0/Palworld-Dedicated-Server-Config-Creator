@@ -6,6 +6,8 @@
   <strong>A single-file HTML tool for creating and editing Palworld dedicated server configuration files</strong>
 </p>
 
+[HOSTED PAGE](https://blinkzer0.github.io/Palworld-Dedicated-Server-Config-Creator/PalWorldSettingsEditor.html)
+
 <p align="center">
   <a href="#-features">Features</a> •
   <a href="#-quick-start">Quick Start</a> •
